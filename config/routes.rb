@@ -3,7 +3,11 @@ Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   root 'abnormals#index'
 
-  resources :abnormals
+  resources :abnormals do
+    collection do
+      get :download_excel
+    end
+  end
   resources :form_options do
     member do
       post :delete_item

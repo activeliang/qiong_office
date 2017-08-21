@@ -23,7 +23,7 @@ class AbnormalsController < ApplicationController
           end
         end
       }
-      
+
       format.html
     end
   end
@@ -61,6 +61,14 @@ class AbnormalsController < ApplicationController
     else
       render :edit, alert: "编辑失败！"
     end
+  end
+
+  def download_excel
+     sleep(3)
+    data=open("#{root_url(format: "xlsx")}"){|f|f.read}
+    time = Time.now.strftime("%H-%M-%S")
+    open("#{Rails.root}/public/office/#{time}.xlsx","wb"){|f|f.write(data)}
+    render :json => { :status => "success", :download_url => "#{root_url}office/#{time}.xlsx" }
   end
 
   def destroy
