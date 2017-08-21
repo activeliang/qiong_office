@@ -64,7 +64,6 @@ class AbnormalsController < ApplicationController
   end
 
   def download_excel
-     sleep(3)
     data=open("#{root_url(format: "xlsx")}"){|f|f.read}
     time = Time.now.strftime("%H-%M-%S")
     open("#{Rails.root}/public/office/#{time}.xlsx","wb"){|f|f.write(data)}
