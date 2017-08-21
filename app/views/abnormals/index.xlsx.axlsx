@@ -19,8 +19,6 @@ wb = xlsx_package.workbook
 
 
 
-
-
     #指定图片路径
     img = File.expand_path("#{Rails.root}/public/images/#{r.envelop}.png", __FILE__)
 
