@@ -1,0 +1,46 @@
+wb = xlsx_package.workbook
+  wb.styles do |s|
+
+    #一些样式，供下文引用
+    head = s.add_style :bg_color => "2dbe60", :sz => 14, :border => Axlsx::STYLE_THIN_BORDER, :fg_color => "00", :alignment => { :horizontal=> :center,:vertical => :center }
+    options = {:grid_lines => true, :headings => true, :horizontal_centered => true}
+    margins = {:left => 3, :right => 3, :top => 1.2, :bottom => 1.2, :header => 0.7, :footer => 0.7}
+    black_cell = s.add_style :bg_color => "ff", :fg_color => "666666", :border => Axlsx::STYLE_THIN_BORDER, :sz => 12, :alignment => { :horizontal=> :center, :vertical => :center , :wrap_text => true  }
+
+ wb.add_worksheet(name: "Buttons", :print_options => options, :page_margins => margins) do |sheet|
+
+    #增加表头
+    sheet.add_row ["日期", "客户", "制式袋", "款号", "图片", "件数", "版交期/出货期", "业务", "负责人", "异常原因", "当事人", "部门", "新交期","备注"], :style => head
+    sum = 0
+
+    @abnormals.each do |r|
+
+    sum += 1
+
+
+
+
+
+    #指定图片路径
+    img = File.expand_path("#{Rails.root}/public/images/#{r.envelop}.png", __FILE__)
+
+
+    #在表格中插入图片
+    sheet.add_image(:image_src => img, :noSelect => true, :noMove => true) do |image|
+      image.width=90
+      image.height=90
+      image.start_at 4, sum
+    end
+
+    #插入正文内容
+    sheet.add_row [r.input_time.sub(/\A20/, ''), r.client, r.envelop, r.model_no, '', r.quantity, r.raw_delivery, r.merchandiser, r.principal, r.reason, r.faulter, r.department, r.new_delivery, r.remarks], :height => 70, :style => black_cell
+    search_envelop_url = "http://www.diastarasia.com/Diastar/Envelop.do?action=searchEnvelop&envelopID=" + r.envelop
+
+    #插入制工袋超链接
+    sheet.add_hyperlink :location => search_envelop_url, :ref => sheet.rows[sum].cells[2]
+    sheet.column_widths nil, nil, nil, nil, 12
+  end
+
+  end
+
+end
