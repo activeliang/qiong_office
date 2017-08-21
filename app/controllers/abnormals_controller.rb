@@ -56,7 +56,7 @@ class AbnormalsController < ApplicationController
   def update
     envelop = @abnormal.envelop
     if @abnormal.update(abnormal_params)
-      # GetEnvelopDetailJob.perform_later(@abnormal.id) if envelop != params[:abnormal][:envelop]
+      GetEnvelopDetailJob.perform_later(@abnormal.id) if envelop != params[:abnormal][:envelop]
       redirect_to abnormals_path, notice: "编辑成功！"
     else
       render :edit, alert: "编辑失败！"
