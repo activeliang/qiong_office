@@ -22,6 +22,5 @@
 
 # Ignore application configuration
 /config/application.yml
-/public/images
-/public/uploads
-/public/office
+/public/office/*.xlsx
+/public/images/*.png
