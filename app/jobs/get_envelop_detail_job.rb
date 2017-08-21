@@ -9,7 +9,7 @@ class GetEnvelopDetailJob < ApplicationJob
     url = doc.scan(/\/I.+\.jpg/).first
     # 找出客户
     client = doc.scan(/客户.Client.*td>\s*.*td\>/).first.to_s.scan(/\<td.*td\>/).first.to_s.gsub(/(\<td\>|\<\/td\>)/, '')
-    abnormal.remote_image_url = "http://www.diastarasia.com/" + url
+    abnormal.remote_image_url = "http://www.diastarasia.com" + url
     abnormal.client = client
     # 找出款号
     abnormal.model_no = doc.scan(/ByModelNo.*\"/).first.to_s.scan(/\=.*\"/).first.to_s.gsub(/(\=|\")/, '')
