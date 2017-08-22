@@ -7,9 +7,10 @@ class GetEnvelopDetailJob < ApplicationJob
     doc = Nokogiri::HTML.parse(response.body).to_s
     # 找出图片链接
     url = doc.scan(/\/I.+\.jpg/).first
+    image_url = "http://www.diastarasia.com" + url
     # 找出客户
     client = doc.scan(/客户.Client.*td>\s*.*td\>/).first.to_s.scan(/\<td.*td\>/).first.to_s.gsub(/(\<td\>|\<\/td\>)/, '')
-    abnormal.remote_image_url = "http://www.diastarasia.com" + url
+    abnormal.image = open(image_url)
     abnormal.client = client
     # 找出款号
     abnormal.model_no = doc.scan(/ByModelNo.*\"/).first.to_s.scan(/\=.*\"/).first.to_s.gsub(/(\=|\")/, '')
