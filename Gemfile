@@ -49,9 +49,7 @@ gem 'bootstrap-datepicker-rails'
 gem 'carrierwave'
 
 gem 'mini_magick'
-
-gem 'carrierwave-qiniu', '1.1.0'
-gem 'qiniu-rs'
+gem 'fog'
 gem 'figaro'
 
 group :development, :test do
