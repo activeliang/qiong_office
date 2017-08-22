@@ -39,7 +39,7 @@ class AbnormalsController < ApplicationController
 
   def create
     @abnormal = Abnormal.new(abnormal_params)
-    @abnormal.envelop = params[:abnormal][:envelop].scan(/\d{6}/).first
+    @abnormal.envelop = params[:abnormal][:envelop].gsub(/\s/, '')
     if @abnormal.save
       GetEnvelopDetailJob.perform_later(@abnormal.id)
       CheckFormFieldJob.perform_later(params[:abnormal][:principal], params[:abnormal][:department])
