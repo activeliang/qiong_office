@@ -1,6 +1,6 @@
 class AbnormalsController < ApplicationController
   before_action :find_abnormal, only: [:destroy, :edit, :update]
-  CHECK_EVNELOP = /\d{6}/
+
   def  index
     @dia_url = "http://www.diastarasia.com/Diastar/Envelop.do?action=searchEnvelop"
     @abnormals = Abnormal.all
@@ -39,23 +39,14 @@ class AbnormalsController < ApplicationController
 
   def create
     @abnormal = Abnormal.new(abnormal_params)
-
-
-
-    if params[:abnormal][:envelop] =~ CHECK_EVNELOP
-
-        if @abnormal.save
-          GetEnvelopDetailJob.perform_later(@abnormal.id)
-          CheckFormFieldJob.perform_later(params[:abnormal][:principal], params[:abnormal][:department])
-          redirect_to abnormals_path, notice: "success!存入成功！"
-        else
-          render :new, alert: "存入失败，检查下数据有无问题。。。"
-        end
-
+    @abnormal.envelop = params[:abnormal][:envelop].scan(/\d{6}/).first
+    if @abnormal.save
+      GetEnvelopDetailJob.perform_later(@abnormal.id)
+      CheckFormFieldJob.perform_later(params[:abnormal][:principal], params[:abnormal][:department])
+      redirect_to abnormals_path, notice: "success!存入成功！"
     else
-      redirect_to new_abnormal_path, alert: "输入的制工袋位数不正确，请输入6位数的制工袋！"
+      render :new, alert: "请输入6位数的制工袋~"
     end
-
   end
 
   def edit
