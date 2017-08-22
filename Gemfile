@@ -50,7 +50,7 @@ gem 'carrierwave'
 
 gem 'mini_magick'
 
-gem 'carrierwave-qiniu', '1.1.0'
+gem 'carrierwave-qiniu'
 gem 'qiniu-rs'
 gem 'figaro'
 
