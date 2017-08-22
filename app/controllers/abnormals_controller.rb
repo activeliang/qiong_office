@@ -66,7 +66,7 @@ class AbnormalsController < ApplicationController
 
   def download_excel
     data=open("#{root_url(format: "xlsx")}"){|f|f.read}
-    time = Time.now.strftime("%m-%d %H:%M")
+    time = Time.now.in_time_zone(8).strftime("%m-%d %H:%M")
     open("#{Rails.root}/public/office/#{time}.xlsx","wb"){|f|f.write(data)}
     render :json => { :status => "success", :download_url => "#{root_url}office/#{time}.xlsx" }
   end
