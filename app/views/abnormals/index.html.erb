@@ -1,6 +1,7 @@
 <h3>异常记录列表</h3>
-<%= link_to "新增记录", new_abnormal_path, class: "btn btn-primary pull-right" %>
+<%= link_to "新增记录", new_abnormal_path, class: "btn btn-primary pull-left" %>
 <%= link_to "导出excel",abnormals_path(:format => "xlsx"), id: "download_excel_btn", class: "btn btn-success" %>
+<br>
 <table class="table table-striped table-bordered table-hover">
   <thead>
     <tr>
@@ -24,7 +25,7 @@
   <tbody>
     <% @abnormals.each do |abnormal| %>
       <tr>
-        <td><%= abnormal.input_time %></td>
+        <td><%= abnormal.input_time.sub(/\A20/, '') %></td>
         <td><%= abnormal.client %></td>
         <td><%= link_to abnormal.envelop, @dia_url + '&' + 'envelopID=' + abnormal.envelop, method: :post %></td>
         <td><%= abnormal.model_no %></td>
@@ -42,7 +43,7 @@
         <td><%= abnormal.reason %></td>
         <td><%= abnormal.faulter %></td>
         <td><%= abnormal.department %></td>
-        <td><%= abnormal.new_delivery %></td>
+        <td><%= abnormal.new_delivery.sub(/\A20/, '') %></td>
         <td><%= abnormal.remarks %></td>
         <td>
           <%= link_to "编辑", edit_abnormal_path(abnormal), class: "btn btn-info btn-sm" %>
@@ -93,6 +94,6 @@
 
   $("#download_file_btn").click(function(){
     $("#overlay").css("height", "0");
-    $("#overlay").css("top", "0");
+    $("#text_2").css("desplay", "none");
   })
 </script>

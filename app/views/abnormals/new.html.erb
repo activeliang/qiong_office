@@ -1,4 +1,5 @@
 <div class="container">
+<div class="col-sm-4 col-sm-offset-4">
   <h3>新增异常记录</h3>
 
   <%= simple_form_for @abnormal do |f| %>
@@ -45,9 +46,9 @@
     <hr>
     <!--======================== 单选结束 ========================-->
     <%= f.input :quantity, label: "数量（默认为1）" %>
-    <%= f.input :image, as: :file %>
-    <%= f.submit "提交", class: "btn btn-success btn-long" %>
+    <%= f.submit "提交", class: "btn btn-success btn-block" %>
   <% end %>
+</div>
 </div>
 
 

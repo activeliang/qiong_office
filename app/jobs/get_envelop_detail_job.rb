@@ -3,7 +3,7 @@ class GetEnvelopDetailJob < ApplicationJob
 
   def perform(abnormal_id)
     abnormal = Abnormal.find(abnormal_id)
-    response = RestClient.post 'www.diastarasia.com/Diastar/Envelop.do?action=searchEnvelop', {envelopID: abnormal.envelop}
+    response = RestClient.post 'www.diastarasia.com/Diastar/Envelop.do?action=searchEnvelop', {envelopID: abnormal.envelop.scan(/\d{6}/).first}
     doc = Nokogiri::HTML.parse(response.body).to_s
     # 找出图片链接
     url = doc.scan(/\/I.+\.jpg/).first

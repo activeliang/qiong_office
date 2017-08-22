@@ -1,5 +1,6 @@
 <div class="container">
-  <h3>新增异常记录</h3>
+  <div class="col-sm-4 col-sm-offset-4">
+  <h3>编辑异常记录</h3>
 
   <%= simple_form_for @abnormal do |f| %>
     <%= f.label :input_time, "日期" %>
@@ -49,8 +50,16 @@
     <hr>
     <!--======================== 单选结束 ========================-->
     <%= f.input :remarks, label: "备注" %>
-    <%= f.submit "提交", class: "btn btn-success btn-long" %>
+    <% if @abnormal.image.present? %>
+      <%= f.label :image, "当前记录图片" %>
+      <br>
+      <%= image_tag @abnormal.image.thumb, class: "thumbnail, img-responsive" %>
+    <% end %>
+    <br>
+    <%= f.input :image, as: :file, label: "更新图片" %>
+    <%= f.submit "提交", class: "btn btn-success btn-block" %>
   <% end %>
+</div>
 </div>
 
 
