@@ -8,7 +8,7 @@ class GetEnvelopDetailJob < ApplicationJob
     # 找出图片链接
     url = doc.scan(/\/I.+\.jpg/).first
     image_url = "http://www.diastarasia.com" + url
-    # abnormal.image = open(image_url)
+    abnormal.remote_image_url = image_url
     # 找出客户
     client = doc.scan(/客户.Client.*td>\s*.*td\>/).first.to_s.scan(/\<td.*td\>/).first.to_s.gsub(/(\<td\>|\<\/td\>)/, '')
 
