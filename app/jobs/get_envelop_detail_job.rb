@@ -20,7 +20,8 @@ class GetEnvelopDetailJob < ApplicationJob
     # 找出出货期
     second_date = doc.scan(/Deliver.Date.*\s*.*\s*.*/).first.to_s.scan(/20.*\-.*\-../).first.to_s.sub(/20/,'')
     # 把头版交期或出货期存入原始交期栏位
-    abnormal.raw_delivery = "【" << first_date << "】【" << second_date << "】"
+    tmp_date = "" << first_date << "&" << second_date
+    abnormal.raw_delivery = tmp_date.split("&").reject{|x| !x.present?}.join("&")
     # 找出跟版
     genbanren = doc.scan(/跟版人.*\s*.*\s*.*/).first.to_s.scan(/\t....\r/).first.to_s.gsub(/(\s|.\s)/, '').sub(/\)/, '')
     # 找出跟单

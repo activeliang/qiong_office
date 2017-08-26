@@ -41,3 +41,8 @@
   -ms-transform: translate(-50%, -50%);
 
 }
+
+//所有的Placeholder字体颜色
+input::-webkit-input-placeholder {
+    color: #999;
+}

@@ -1,6 +1,13 @@
 <h3>异常记录列表</h3>
 <%= link_to "新增记录", new_abnormal_path, class: "btn btn-primary pull-left" %>
 <%= link_to "导出excel",abnormals_path(:format => "xlsx"), id: "download_excel_btn", class: "btn btn-success" %>
+
+<div class="pull-right">
+  <%= form_tag import_abnormals_path, multipart: true do %>
+    <%= file_field_tag "csv_file" %>
+    <%= submit_tag "上传csv表格导入数据", class: "btn btn-info btn-sm" %>
+  <% end %>
+</div>
 <br>
 <table class="table table-striped table-bordered table-hover">
   <thead>
@@ -17,6 +24,7 @@
       <th>异常原因</th>
       <th>当事人</th>
       <th>部门</th>
+      <th>处理方式</th>
       <th>新交期</th>
       <th>备注</th>
       <th>操作</th>
@@ -25,25 +33,36 @@
   <tbody>
     <% @abnormals.each do |abnormal| %>
       <tr>
-        <td><%= abnormal.input_time.sub(/\A20/, '') %></td>
-        <td><%= abnormal.client %></td>
-        <td><%= link_to abnormal.envelop, @dia_url + '&' + 'envelopID=' + abnormal.envelop, method: :post %></td>
-        <td><%= abnormal.model_no %></td>
         <td>
+          <%= render_content_display abnormal.input_time.to_s.sub(/\A20/, ''), "success"%>
+        </td>
+        <td><%= abnormal.client %></td>
+        <td>
+          <% if abnormal.envelop.present? %>
+            <%= link_to abnormal.envelop, @envelop_link + abnormal.envelop %>
+          <% end %>
+        </td>
+        <td>
+          <% if abnormal.model_no.present? %>
+            <%= link_to abnormal.model_no, @model_no_link + abnormal.model_no %>
+          <% end %>
+        </td>
+        <td width="100px">
           <% if abnormal.image.present? %>
             <%= image_tag abnormal.image.thumb, style: "width: 100px;", class: "thumbnail img-responsive" %>
           <% else %>
             <%= image_tag("http://olmrxx9ks.bkt.clouddn.com/2017-08-19-%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-08-19%20%E4%B8%8B%E5%8D%885.51.10.png", style: "width: 100px;", class:"thumbnail img-responsive" )%>
           <% end %>
         </td>
-        <td><%= abnormal.raw_delivery %></td>
+        <td><%= render_content_display abnormal.raw_delivery, "success", "success" %></td>
         <td><%= abnormal.quantity %></td>
         <td><%= abnormal.merchandiser %></td>
         <td><%= abnormal.principal %></td>
         <td><%= abnormal.reason %></td>
-        <td><%= abnormal.faulter %></td>
-        <td><%= abnormal.department %></td>
-        <td><%= abnormal.new_delivery.sub(/\A20/, '') %></td>
+        <td><%= render_content_display abnormal.faulter, "default", "default" %></td>
+        <td><%= render_content_display abnormal.department, "info", "info" %></td>
+        <td><%= render_content_display abnormal.deal_method, "danger", "danger" %></td>
+        <td><%= render_content_display abnormal.new_delivery.to_s.sub(/\A20/, ''), "success", "success" %></td>
         <td><%= abnormal.remarks %></td>
         <td>
           <%= link_to "编辑", edit_abnormal_path(abnormal), class: "btn btn-info btn-sm" %>

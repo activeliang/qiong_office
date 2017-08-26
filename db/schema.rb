@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170821034122) do
+ActiveRecord::Schema.define(version: 20170824105622) do
 
   create_table "abnormals", force: :cascade do |t|
     t.string   "envelop"
@@ -29,11 +29,21 @@ ActiveRecord::Schema.define(version: 20170821034122) do
     t.integer  "quantity",     default: 1
     t.datetime "created_at",               null: false
     t.datetime "updated_at",               null: false
+    t.integer  "import_id"
+    t.string   "deal_method"
   end
 
   create_table "form_options", force: :cascade do |t|
     t.string   "field"
     t.text     "content"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "imports", force: :cascade do |t|
+    t.string   "remarks"
+    t.string   "status"
+    t.string   "csv_yun"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
