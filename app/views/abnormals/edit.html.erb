@@ -6,7 +6,7 @@
     <%= f.label :input_time, "日期" %>
     <%= f.text_field :input_time, :value => Date.today.strftime("%Y-%m-%d"), :class => "form-control" %> <br>
     <%= f.input :client, label: "客户" %>
-    <%= f.input :envelop, label: "制式袋" %>
+    <%= f.input :envelop, placeholder: "只能输一个", label: "制工袋" %>
     <%= f.input :model_no, label: "款号" %>
     <%= f.input :raw_delivery, label: "版交期/出货期" %>
     <%= f.input :quantity, label: "件数" %>
@@ -15,10 +15,12 @@
     <!--======================== 单选项：负责人 ========================-->
     <%= f.label :principal, "负责人" %>
     <br>
-    <% @principal_option.each do |option| %>
-      <% unless option.empty? %>
-      <input id="abnormal_principal" name="abnormal[principal]" type="radio" value="<%= option %>" class="radio_1" />
-      <label for="abnormal[principal]"><%= option %></label>
+    <% if @principal_option.present? %>
+      <% @principal_option.each do |option| %>
+        <% unless option.empty? %>
+        <input id="abnormal_principal" name="abnormal[principal]" type="radio" value="<%= option %>" class="radio_1" />
+        <label for="abnormal[principal]"><%= option %></label>
+        <% end %>
       <% end %>
     <% end %>
     <input id="abnormal_principal" name="abnormal[principal]" type="radio" value="" class="radio_other_1" />
@@ -28,25 +30,51 @@
 
     <%= f.input :reason, label: "异常原因" %>
 
-    <%= f.input :faulter, label: "当事人" %>
+    <%= f.input :faulter, placeholder: "如有多个，请用空格隔开~", label: "当事人" %>
 
     <hr>
     <%= f.label :new_delivery, "新交期" %>
     <%= f.text_field :new_delivery,:value => Date.today.strftime("%Y-%m-%d"), :class => "form-control" %>
 
-    <!--======================== 单选项：部门 ========================-->
-    <br><br>
-    <%= f.label :department, "部门" %>
+    <!--======================== 多选项：处理方式 ========================-->
+
+    <hr>
+    <%= f.label :deal_method, "处理方式(多选)" %>
     <br>
-    <% @department_option.each do |option| %>
-      <% unless option.empty? %>
-      <input id="abnormal_department" name="abnormal[department]" type="radio" value="<%= option %>" class="radio_2" />
-      <label for="abnormal[department]"><%= option %></label>
+    <% if @deal_method_option.present? %>
+      <% @deal_method_option.each do |option| %>
+        <% unless option.empty? %>
+
+        <input id="abnormal[deal_method]" name="abnormal[deal_method][]" type="checkbox" value="<%= option %>" />
+        <label for="abnormal[deal_method]"><%= option %></label>
+
+        <% end %>
       <% end %>
     <% end %>
-    <input id="abnormal_principal" name="abnormal[department]" type="radio" value="" class="radio_other_2" />
-    <label for="abnormal[principal]">其他</label>
-    <input type="text" name="abnormal[department]" id="radio_other_2_input">
+    <input id="check_other_1" type="checkbox" />
+    <label for="abnormal[deal_method]">其他</label>
+    <input type="text" name="abnormal[deal_method][]" id="check_other_input_1">
+    <hr>
+
+    <!--======================== 多选结束 ========================-->
+
+    <!--======================== 多选项：部门 ========================-->
+    <br><br>
+    <%= f.label :department, "部门(多选)" %>
+    <br>
+    <% if @department_option.present? %>
+      <% @department_option.each do |option| %>
+        <% unless option.empty? %>
+
+        <input id="abnormal[department]" name="abnormal[department][]" type="checkbox" value="<%= option %>" />
+        <label for="abnormal[department]"><%= option %></label>
+
+        <% end %>
+      <% end %>
+    <% end %>
+    <input id="check_other_2" type="checkbox" />
+    <label for="abnormal[department]">其他</label>
+    <input type="text" name="abnormal[department][]" id="check_other_input_2">
     <hr>
     <!--======================== 单选结束 ========================-->
     <%= f.input :remarks, label: "备注" %>
@@ -72,22 +100,44 @@ $(".radio_other_1").click(function(){
   $("#radio_other_1_input").attr("name", "abnormal[principal]");
 })
 
-$(".radio_2").click(function(){
-  $("#radio_other_2_input").attr("name", "");
-})
-$(".radio_other_2").click(function(){
-  $("#radio_other_2_input").attr("name", "abnormal[department]");
-})
-
 // 在"其他"输入框输入时，自动选中
 $("#radio_other_1_input").click(function(){
   $(".radio_other_1").prop("checked", true);
   $("#radio_other_1_input").attr("name", "abnormal[department]");
 })
 
-$("#radio_other_2_input").click(function(){
-  $(".radio_other_2").prop("checked", true);
-  $("#radio_other_2_input").attr("name", "abnormal[department]");
+//多选框时的js辅助
+// 检查其他输入框，自动选中
+$("#check_other_input_1").click(function(event){
+  event.stopPropagation();
+  $("#check_other_1").prop("checked", true);
+})
+
+$("#check_other_1").click(function(event){
+  event.stopPropagation();
+})
+
+$(".page-html").click(function(){
+  var other_input_1 = $("#check_other_input_1").val();
+  if (other_input_1 == "") {
+    $("#check_other_1").prop("checked", false);
+  }
+})
+/////////
+$("#check_other_input_2").click(function(event){
+  event.stopPropagation();
+  $("#check_other_2").prop("checked", true);
+})
+
+$("#check_other_2").click(function(event){
+  event.stopPropagation();
+})
+
+$(".page-html").click(function(){
+  var other_input_2 = $("#check_other_input_2").val();
+  if (other_input_2 == "") {
+    $("#check_other_2").prop("checked", false);
+  }
 })
 
 

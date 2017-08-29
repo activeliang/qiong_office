@@ -2,12 +2,53 @@ class AbnormalsController < ApplicationController
   before_action :find_abnormal, only: [:destroy, :edit, :update]
 
   def  index
+    # 默认为筛选最近三个月资料
+    @abnormals = Abnormal.where( "input_time >= ?", Time.now.months_ago(2).at_beginning_of_month )
+    @start_date = Time.now.months_ago(2).at_beginning_of_month
+    # //时间的筛选
+    if params[:start_on].present?
+      @abnormals = Abnormal.where( "input_time >= ?", Date.parse(params[:start_on]).beginning_of_day )
+      @start_date = Date.parse(params[:start_on]).beginning_of_day
+    end
+    if params[:end_on].present?
+      @abnormals = @abnormals.where( "input_time <= ?", Date.parse(params[:start_on]).end_of_day )
+      @end_date = Date.parse(params[:start_on]).end_of_day
+    end
+    if params[:current_month].present?
+      @abnormals = @abnormals.where( "input_time >= ?", Time.now.at_beginning_of_month )
+      @start_date = Time.now.at_beginning_of_month
+    end
+    if params[:last_month].present?
+      @abnormals = @abnormals.where( "input_time >= ?", Time.now.months_ago(1).at_beginning_of_month)
+      @abnormals = @abnormals.where( "input_time <= ?", Time.now.months_ago(1).at_end_of_month)
+      @start_date = Time.now.months_ago(1).at_beginning_of_month
+      @end_date = Time.now.months_ago(1).at_end_of_month
+    end
+    # 时间筛选结束
+
+    # 页面备用的链接
     @envelop_link = "http://www.diastarasia.com/Diastar/Envelop.do?action=searchEnvelop&envelopID="
     @model_no_link = "http://www.diastarasia.com/Diastar/ModelNo.do?action=searchModelNo&SearchBy=ByModelNo&modelNo="
-    @abnormals = Abnormal.all
+    # 备用哈希
+    @department_hash = Hash.new(0)
+    @deal_method_hash = Hash.new(0)
+    # 生成部门统计和处理方式统计的数据
+      @abnormals.each do |abnormal|
+        if abnormal.department.present?
+          abnormal.department.split("&").each do |d|
+            @department_hash[d] += abnormal.quantity
+          end
+        end
+        if abnormal.deal_method.present?
+          abnormal.deal_method.split("&").each do |d|
+            @deal_method_hash[d] += abnormal.quantity
+          end
+        end
+      end
+    # 根据请求格式分开响应
     respond_to do |format|
-      format.xlsx{
 
+      format.xlsx{
         @abnormals.each do |r|
 
           #判断图片是否存在
@@ -25,7 +66,26 @@ class AbnormalsController < ApplicationController
         end
       }
 
-      format.html
+      format.json{
+        reason_array = []
+        @abnormals.each do |a|
+          a.quantity.times{ reason_array << a.reason}
+        end
+        time_mark = Time.now.strftime("%y-%m-%d-%H-%M-%S")
+        open("#{Rails.root}/public/uploads/#{time_mark}.txt","wb"){|f|f.write(reason_array.join("&").gsub(/\s/, "&").gsub(/\d{6}/, "").gsub(/、/, "").gsub(/\-\d/, "").gsub(/\n/, ""))}
+
+      redirect_to word_cloud_abnormals_path(:time_mark => time_mark)
+
+      }
+
+      format.html {
+        # 生成图表所需要的哈希参数，然后在前端喂给js
+        @all_department_chart_pie = render_chart_description(@department_hash, "department", "pie", "各部门异常数据")
+        @all_department_chart_bar = render_chart_description(@department_hash, "department", "bar", "各部门异常数据")
+
+        @all_deal_with_chart_pie = render_chart_description(@deal_method_hash, "deal_method", "pie", "各处理方式统计")
+        @all_deal_with_chart_bar = render_chart_description(@deal_method_hash, "deal_method", "bar", "各处理方式统计")
+      }
     end
   end
 
@@ -65,9 +125,12 @@ class AbnormalsController < ApplicationController
   end
 
   def edit
-    @principal_option = FormOption.where(:field => "负责人").first.content.split('&')
-    @department_option = FormOption.where(:field => "部门").first.content.split('&')
-    @deal_method_option = FormOption.where(:field => "处理方式").first.content.split('&')
+    option_1= FormOption.where(:field => "负责人")
+    @principal_option = option_1.first.content.split('&') if option_1.present?
+    option_2  = FormOption.where(:field => "部门")
+    @department_option = option_2.first.content.split('&') if option_2.present?
+    option_3 = FormOption.where(:field => "处理方式")
+    @deal_method_option = option_3.first.content.split('&') if option_3.present?
   end
 
   def update
@@ -85,6 +148,11 @@ class AbnormalsController < ApplicationController
     time = Time.now.in_time_zone(8).strftime("%m-%d %H:%M")
     open("#{Rails.root}/public/office/#{time}.xlsx","wb"){|f|f.write(data)}
     render :json => { :status => "success", :download_url => "#{root_url}office/#{time}.xlsx" }
+  end
+
+  def word_cloud
+
+    @word_array = open("#{Rails.root}/public/uploads/#{params[:time_mark]}.txt","r"){|f|f.read}
   end
 
   def destroy
@@ -115,18 +183,18 @@ class AbnormalsController < ApplicationController
                                    :merchandiser => row[7],
                                    :principal => row[8],
                                    :reason => row[9],
-                                   :faulter => row[10],
+                                   :faulter => (row[10].split("\n").map{|x| x.split(" ")}.join("&") if row[10].present?),
                                    :new_delivery => render_new_date(row[11]),
                                    :deal_method => render_deal_method(row[11], row[12]),
-                                   :department => row[12].split("\n").map{|x| x.split(" ")}.join("&"),)
+                                   :department => (row[12].split("\n").map{|x| x.split(" ")}.join("&") if row[12].present?),)
 
       #  binding.pry
         if abnormal.save
 
             if abnormal.envelop.present?
-              GetEnvelopDetailJob.perform_later(abnormal.id)
+              GetEnvelopDetailJob.set( wait: 1.minutes ).perform_later(abnormal.id)
             elsif abnormal.model_no.present?
-              GetModelNoDetailJob.perform_later(abnormal.id)
+              GetModelNoDetailJob.set( wait: 1.minutes ).perform_later(abnormal.id)
             end
 
             success += 1
@@ -202,5 +270,53 @@ class AbnormalsController < ApplicationController
     elsif str.to_s.scan(/\d*-\d*/).first.present?
       "2007-" + str.to_s.scan(/\d*-\d*/).first.to_s
     end
+  end
+
+  # 返回一个图表所需要的数据。
+  def render_chart_description(option_hash, category, style, title)
+
+    bc = []
+    fc = []
+    color_array = (0..255).to_a
+    color_array.shuffle[1..option_hash.count].zip(color_array.shuffle, color_array.shuffle) do |a, b, c|
+      bc << "rgba(#{a}, #{b}, #{c}, 0.2)"
+      fc << "rgba(#{a}, #{b}, #{c}, 1)"
+    end
+
+      {
+            type: style,
+            data: {
+                datasets: [{
+                    data: option_hash.values,
+                    backgroundColor: bc,
+                    borderColor: fc,
+                    borderWidth: 1,
+                    hoverBorderWidth: 2,
+                    dataLabels: {
+                      colors: fc}
+                }],
+                labels: option_hash.keys},
+            options: {
+                responsive: true,
+                legend: false,
+                title: {
+                    display: true,
+                    text: title
+                },
+                animation: {
+                    animateScale: true,
+                    animateRotate: true
+                },
+                pieceLabel: {
+                render: 'label',
+                fontColor: '#666',
+                position: 'outside'
+              }
+            }
+
+        }
+
+
+
   end
 end

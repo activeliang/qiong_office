@@ -1,13 +1,9 @@
-<!DOCTYPE html>
-<meta charset="utf-8">
-<body>
-  <div id="tete"></div>
-</body>
-<script src="https://github.com/jasondavies/d3-cloud/blob/v1.1.1/examples/d3/d3.js"></script>
-<script src="https://github.com/jasondavies/d3-cloud/blob/v1.1.1/d3.layout.cloud.js"></script>
-<script>(function() {
+var d3 = require("d3"),
+    cloud = require("../");
+
 var fill = d3.scale.category20();
-var layout = d3.layout.cloud()
+
+var layout = cloud()
     .size([500, 500])
     .words([
       "Hello", "world", "normally", "you", "want", "more", "words",
@@ -19,9 +15,11 @@ var layout = d3.layout.cloud()
     .font("Impact")
     .fontSize(function(d) { return d.size; })
     .on("end", draw);
+
 layout.start();
+
 function draw(words) {
-  d3.select("#tete").append("svg")
+  d3.select("body").append("svg")
       .attr("width", layout.size()[0])
       .attr("height", layout.size()[1])
     .append("g")
@@ -38,4 +36,3 @@ function draw(words) {
       })
       .text(function(d) { return d.text; });
 }
-})();</script>

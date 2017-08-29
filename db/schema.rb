@@ -15,7 +15,6 @@ ActiveRecord::Schema.define(version: 20170824105622) do
   create_table "abnormals", force: :cascade do |t|
     t.string   "envelop"
     t.string   "principal"
-    t.string   "input_time"
     t.string   "raw_delivery"
     t.string   "new_delivery"
     t.string   "faulter"
@@ -27,6 +26,7 @@ ActiveRecord::Schema.define(version: 20170824105622) do
     t.text     "reason"
     t.text     "remarks"
     t.integer  "quantity",     default: 1
+    t.datetime "input_time"
     t.datetime "created_at",               null: false
     t.datetime "updated_at",               null: false
     t.integer  "import_id"

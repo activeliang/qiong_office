@@ -18,4 +18,12 @@ module AbnormalsHelper
 
     end
   end
+
+  def render_last_three_month_start(date)
+    date.months_ago(2).strftime("%Y-%m-1")
+  end
+
+  def render_last_three_month_end(date)
+      date
+  end
 end
