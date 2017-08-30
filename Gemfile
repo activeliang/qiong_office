@@ -49,8 +49,9 @@ gem 'bootstrap-datepicker-rails'
 gem 'carrierwave'
 
 gem 'mini_magick'
-gem 'fog'
 gem 'figaro'
+gem 'carrierwave-qiniu'
+gem 'qiniu-rs'
 
 gem 'will_paginate'
 

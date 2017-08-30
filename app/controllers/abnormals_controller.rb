@@ -48,19 +48,13 @@ class AbnormalsController < ApplicationController
       format.xlsx{
         @abnormals.each do |r|
 
-          #判断图片是否存在
-          if r.image.present?
-            get_image_url = r.image.thumb.url
-          else
-            get_image_url = "http://olmrxx9ks.bkt.clouddn.com/2017-08-19-%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-08-19%20%E4%B8%8B%E5%8D%885.51.10.png"  '?imageslim'
-          end
-
           #把图片下载回本地
-            unless File.exist?("#{Rails.root}/public/images/#{r.envelop}.png")
-              data=open(get_image_url){|f|f.read}
-              open("#{Rails.root}/public/images/#{r.envelop}.png","wb"){|f|f.write(data)}
+          if r.image.present?
+            unless File.exist?("#{Rails.root}/public/images/#{r.envelop}.jpg")
+              data=open(r.image.thumb.url){|f|f.read}
+              open("#{Rails.root}/public/images/#{r.envelop}.jpg","wb"){|f|f.write(data)}
             end
-
+          end
 
         end
       }
