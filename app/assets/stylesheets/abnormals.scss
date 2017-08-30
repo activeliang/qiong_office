@@ -6,19 +6,18 @@
 
 // 加载中背影
 #overlay {
-    position: absolute; /* Sit on top of the page content */
-    // display: none; /* Hidden by default */
-    width: 100%; /* Full width (cover the whole page) */
-    height: 0; /* Full height (cover the whole page) */
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0,0,0,0.7); /* Black background with opacity */
-    z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
-    cursor: pointer; /* Add a pointer on hover */
-    transition: 3s ease;
-    animation: fadein-1 0.8s, fadeout-1 0.5s 2.5s;
-
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  // background-color: #008CBA;
+  overflow: hidden;
+  width: 100%;
+  height: 0;
+  transition: .5s ease;
+  background-color: rgba(0,0,0,0.8);
+  z-index: 3;
+  cursor: pointer;
 }
 
 // 下载按钮居中
@@ -41,8 +40,38 @@
   -ms-transform: translate(-50%, -50%);
 
 }
+svg {
+    background: rgba(0, 0, 0, 0.9);
+}
 
 //所有的Placeholder字体颜色
 input::-webkit-input-placeholder {
     color: #999;
+}
+
+
+//上传csv的form表单
+.csv-form form {
+    float: right;
+}
+input#csv_file {
+    float: right;
+    width: 176px;
+}
+input.btn.btn-info.btn-sm {
+    float: right;
+}
+a#download_excel_btn {
+    float: left;
+}
+//日期表单
+input#end_date {
+    width: 100px;
+}
+input#start_date {
+    width: 100px;
+}
+
+.btn:hover{
+  background: translate;
 }

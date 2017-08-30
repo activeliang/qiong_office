@@ -11,6 +11,11 @@ Rails.application.routes.draw do
       get :word_cloud
     end
   end
+  resources :imports do
+    member do
+      get :download_csv
+    end
+  end
   resources :form_options do
     member do
       post :delete_item

@@ -2,14 +2,26 @@
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
-            <a class="navbar-brand" href="/">Qiong_office </a>
+            <a class="navbar-brand" href="/">New Hope EA</a>
 
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
+              <li><%= link_to "首页", "/" %></li>
+            </ul>
+            <ul class="nav navbar-nav">
+              <li><%= link_to "异常记录", abnormals_path %></li>
+            </ul>
+            <ul class="nav navbar-nav">
+              <li><%= link_to "新增异常", new_abnormal_path %></li>
+            </ul>
+            <ul class="nav navbar-nav">
               <li><%= link_to "表单助手", form_options_path %></li>
+            </ul>
+            <ul class="nav navbar-nav">
+              <li><%= link_to "导入记录", imports_path %></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
               <% if !current_user %>

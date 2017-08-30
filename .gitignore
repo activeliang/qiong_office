@@ -25,3 +25,4 @@
 
 /public/images/*.png
 /public/uploads
+/public/wordarray/*.txt

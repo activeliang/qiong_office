@@ -1,3 +1,8 @@
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, fieldset, input, textarea, p, blockquote, th, td {
+    margin: 0;
+    padding: 0;
+    font-family: gotham, Hiragino Sans GB, STHeiti, Microsoft Yahei, helvetica, arial, sans-serif !important;
+}
 /*
  * This is a manifest file that'll be compiled into application.css, which will include all the files
  * listed below.
@@ -19,3 +24,15 @@
  @import "bootstrap-datepicker3";
 
  @import "abnormals";
+
+
+
+ .btn:hover{
+   background: transparent;
+   color: #555;
+ }
+
+.analyze-btn:hover{
+   background: transparent !important;
+   color: #555 !important;
+ }

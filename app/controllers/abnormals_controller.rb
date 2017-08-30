@@ -2,34 +2,27 @@ class AbnormalsController < ApplicationController
   before_action :find_abnormal, only: [:destroy, :edit, :update]
 
   def  index
-    # 默认为筛选最近三个月资料
-    @abnormals = Abnormal.where( "input_time >= ?", Time.now.months_ago(2).at_beginning_of_month )
-    @start_date = Time.now.months_ago(2).at_beginning_of_month
     # //时间的筛选
     if params[:start_on].present?
       @abnormals = Abnormal.where( "input_time >= ?", Date.parse(params[:start_on]).beginning_of_day )
       @start_date = Date.parse(params[:start_on]).beginning_of_day
     end
     if params[:end_on].present?
-      @abnormals = @abnormals.where( "input_time <= ?", Date.parse(params[:start_on]).end_of_day )
-      @end_date = Date.parse(params[:start_on]).end_of_day
+      @abnormals = @abnormals.where( "input_time <= ?", Date.parse(params[:end_on]).end_of_day )
+      @end_date = Date.parse(params[:end_on]).end_of_day
     end
-    if params[:current_month].present?
-      @abnormals = @abnormals.where( "input_time >= ?", Time.now.at_beginning_of_month )
-      @start_date = Time.now.at_beginning_of_month
-    end
-    if params[:last_month].present?
-      @abnormals = @abnormals.where( "input_time >= ?", Time.now.months_ago(1).at_beginning_of_month)
-      @abnormals = @abnormals.where( "input_time <= ?", Time.now.months_ago(1).at_end_of_month)
-      @start_date = Time.now.months_ago(1).at_beginning_of_month
-      @end_date = Time.now.months_ago(1).at_end_of_month
+
+    if !params[:start_on].present? && !params[:end_on].present?
+      # 默认为筛选最近三个月资料
+      @abnormals = Abnormal.where( "input_time >= ?", Time.now.months_ago(2).at_beginning_of_month )
+      @start_date = Time.now.months_ago(2).at_beginning_of_month
     end
     # 时间筛选结束
 
     # 页面备用的链接
     @envelop_link = "http://www.diastarasia.com/Diastar/Envelop.do?action=searchEnvelop&envelopID="
     @model_no_link = "http://www.diastarasia.com/Diastar/ModelNo.do?action=searchModelNo&SearchBy=ByModelNo&modelNo="
-    # 备用哈希
+    # 生成 按部门，按处理方式 分类的备用哈希
     @department_hash = Hash.new(0)
     @deal_method_hash = Hash.new(0)
     # 生成部门统计和处理方式统计的数据
@@ -53,7 +46,7 @@ class AbnormalsController < ApplicationController
 
           #判断图片是否存在
           if r.image.present?
-            get_image_url = r.image.thumb.url  '?imageslim'
+            get_image_url = r.image.thumb.url
           else
             get_image_url = "http://olmrxx9ks.bkt.clouddn.com/2017-08-19-%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-08-19%20%E4%B8%8B%E5%8D%885.51.10.png"  '?imageslim'
           end
@@ -66,25 +59,33 @@ class AbnormalsController < ApplicationController
         end
       }
 
-      format.json{
-        reason_array = []
-        @abnormals.each do |a|
-          a.quantity.times{ reason_array << a.reason}
-        end
-        time_mark = Time.now.strftime("%y-%m-%d-%H-%M-%S")
-        open("#{Rails.root}/public/uploads/#{time_mark}.txt","wb"){|f|f.write(reason_array.join("&").gsub(/\s/, "&").gsub(/\d{6}/, "").gsub(/、/, "").gsub(/\-\d/, "").gsub(/\n/, ""))}
-
-      redirect_to word_cloud_abnormals_path(:time_mark => time_mark)
-
-      }
 
       format.html {
         # 生成图表所需要的哈希参数，然后在前端喂给js
         @all_department_chart_pie = render_chart_description(@department_hash, "department", "pie", "各部门异常数据")
         @all_department_chart_bar = render_chart_description(@department_hash, "department", "bar", "各部门异常数据")
-
         @all_deal_with_chart_pie = render_chart_description(@deal_method_hash, "deal_method", "pie", "各处理方式统计")
         @all_deal_with_chart_bar = render_chart_description(@deal_method_hash, "deal_method", "bar", "各处理方式统计")
+
+        # 为生成word_cloud准备数据
+        @department_hash_file = {}
+        @deal_method_hash_file = {}
+        @all_reason_file = SecureRandom.hex 6
+
+        @department_hash.each do |k, v|
+          file_name = SecureRandom.hex 6
+          GenerateWordArrayJob.perform_later("department", k, @start_date.to_s, (@end_date.to_s if @end_date.to_s.present?), file_name )
+          @department_hash_file[k] =  file_name
+        end
+
+        @deal_method_hash.each do |k, v|
+          file_name = SecureRandom.hex 6
+          GenerateWordArrayJob.perform_later("deal_method", k, @start_date.to_s, (@end_date.to_s if @end_date.to_s.present?), file_name )
+          @deal_method_hash_file[k] = file_name
+        end
+
+        GenerateWordArrayJob.perform_later("all", "all", @start_date.to_s, (@end_date.to_s if @end_date.to_s.present?), @all_reason_file)
+        # binding.pry
       }
     end
   end
@@ -119,7 +120,6 @@ class AbnormalsController < ApplicationController
       redirect_to abnormals_path, notice: "success!存入成功！"
 
     else
-      binding.pry
       render :new
     end
   end
@@ -144,15 +144,15 @@ class AbnormalsController < ApplicationController
   end
 
   def download_excel
-    data=open("#{root_url(format: "xlsx")}"){|f|f.read}
+    data=open("#{abnormals_url(format: "xlsx", start_on: params[:start_on], end_on: params[:end_on])}"){|f|f.read}
     time = Time.now.in_time_zone(8).strftime("%m-%d %H:%M")
     open("#{Rails.root}/public/office/#{time}.xlsx","wb"){|f|f.write(data)}
     render :json => { :status => "success", :download_url => "#{root_url}office/#{time}.xlsx" }
   end
 
   def word_cloud
-
-    @word_array = open("#{Rails.root}/public/uploads/#{params[:time_mark]}.txt","r"){|f|f.read}
+    @word_array = open("#{Rails.root}/public/wordarray/#{params[:file_name]}.txt","r"){|f|f.read}
+    render :layout => false
   end
 
   def destroy
@@ -179,14 +179,14 @@ class AbnormalsController < ApplicationController
                                    :client => row[1],
                                    :envelop => row[2],
                                    :model_no => row[3],
-                                   :quantity => row[5],
+                                   :quantity => render_quantity(row[5]),
                                    :merchandiser => row[7],
                                    :principal => row[8],
                                    :reason => row[9],
                                    :faulter => (row[10].split("\n").map{|x| x.split(" ")}.join("&") if row[10].present?),
                                    :new_delivery => render_new_date(row[11]),
                                    :deal_method => render_deal_method(row[11], row[12]),
-                                   :department => (row[12].split("\n").map{|x| x.split(" ")}.join("&") if row[12].present?),)
+                                   :department => (row[12].gsub(/\?/, '').gsub(/？/, '').gsub(/[a-z]/, '').split("\n").map{|x| x.split(" ")}.join("&") if row[12].present?),)
 
       #  binding.pry
         if abnormal.save
@@ -256,8 +256,8 @@ class AbnormalsController < ApplicationController
 
     if department.present?
       if department.scan(/旧/).present?
-       method = method << "&" << "废旧模" if method.present?
-       method = "废旧模" unless method.present?
+       method = method << "&" << "废旧膜" if method.present?
+       method = "废旧膜" unless method.present?
      end
    end
 
@@ -272,6 +272,14 @@ class AbnormalsController < ApplicationController
     end
   end
 
+  def render_quantity(str)
+    if str.present?
+      str
+    else
+      str = 1
+    end
+  end
+
   # 返回一个图表所需要的数据。
   def render_chart_description(option_hash, category, style, title)
 
@@ -279,8 +287,8 @@ class AbnormalsController < ApplicationController
     fc = []
     color_array = (0..255).to_a
     color_array.shuffle[1..option_hash.count].zip(color_array.shuffle, color_array.shuffle) do |a, b, c|
-      bc << "rgba(#{a}, #{b}, #{c}, 0.2)"
-      fc << "rgba(#{a}, #{b}, #{c}, 1)"
+    bc << "rgba(#{a},#{b},#{c}, 0.2)"
+      fc << "rgba(#{a},#{b},#{c}, 1)"
     end
 
       {
@@ -300,7 +308,7 @@ class AbnormalsController < ApplicationController
                 responsive: true,
                 legend: false,
                 title: {
-                    display: true,
+                    display: false,
                     text: title
                 },
                 animation: {

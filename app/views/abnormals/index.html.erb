@@ -1,26 +1,105 @@
- <%= form_tag abnormals_path, :method => :get do %>
-
-   <p>
-     筛选资料(默认最近三个月)：<%= text_field_tag :start_on, params[:start_on], :id => "strat_date", :value => render_last_three_month_start(Date.today) %>
-     ～
-     <%= text_field_tag :end_on, params[:end_on], :id => "end_date", :value => render_last_three_month_end(Date.today) %>
-   </p>
-
-   <p>
-     <%= submit_tag "送出筛选", :class => "btn btn-success" %>
-   </p>
- <% end %>
-<div class="container-fluid page" style="overflow-x: auto; overflow-y: auto; height: 1000px; width:100%;">
-
-  <h3><%= Date.today.month - 2 %>月1日至今的异常记录</h3>
-  <%= link_to "新增记录", new_abnormal_path, class: "btn btn-primary pull-left" %>
-  <%= link_to "导出excel",abnormals_path(:format => "xlsx"), id: "download_excel_btn", class: "btn btn-success" %>
-
-  <div class="pull-right">
+<script src="//cdn.bootcss.com/Chart.js/2.5.0/Chart.bundle.min.js"></script>
+<script src="http://olmrxx9ks.bkt.clouddn.com/Chart.bundle.min.jss"></script>
+<script src="http://olmrxx9ks.bkt.clouddn.com/chartsjs-plugin-data-labels.js"></script>
+<script src="http://olmrxx9ks.bkt.clouddn.com/Chart.PieceLabel.js"></script>
+<div style="position: relative;">
+  <div class="col-sm-6">
+    <%= form_tag abnormals_path, :method => :get do %>
+        筛选资料：<%= text_field_tag :start_on, params[:start_on], :id => "start_date", :value => render_last_three_month_start(Date.today) %>
+        ～
+        <%= text_field_tag :end_on, params[:end_on], :id => "end_date", :value => render_last_three_month_end(Date.today) %>
+        <%= submit_tag "送出筛选", :class => "btn btn-success btn-sm" %>
+    <% end %>
+    <% current_m = Date.today.month %>
+    快速选择：
+    <%= link_to "近3月", abnormals_path, class: "btn btn-xs btn-success" %>
+    <%= link_to "#{current_m}月", abnormals_path(start_on: render_month_first(current_m), end_on: render_month_last(current_m)), class: "btn btn-xs btn-success" %>
+    <%= link_to "#{current_m - 1}月", abnormals_path(start_on: render_month_first(current_m -1), end_on: render_month_last(current_m -1)), class: "btn btn-xs btn-success" %>
+    <%= link_to "#{current_m - 2}月", abnormals_path(start_on: render_month_first(current_m -2), end_on: render_month_last(current_m -2)), class: "btn btn-xs btn-success" %>
+  </div>
+  <div class="col-sm-6 csv-form">
     <%= form_tag import_abnormals_path, multipart: true do %>
       <%= file_field_tag "csv_file" %>
-      <%= submit_tag "上传csv表格导入数据", class: "btn btn-info btn-sm" %>
+      <%= submit_tag "导入CSV数据", class: "btn btn-info btn-sm" %>
     <% end %>
+    <%= link_to "新增记录", new_abnormal_path, class: "btn btn-sm btn-primary pull-left" %>
+    <%= link_to "导出excel",abnormals_path(:format => "xlsx"), id: "download_excel_btn", class: "btn btn-sm btn-success" %>
+  </div>
+  <br><br><br>
+  <legend class="text-center" style="color: #555;">当前位置：<%= render_date_helper(@start_date, @end_date) %>的异常记录</legend>
+  <!--======================== 生成图表 ========================-->
+  <div class="row">
+    <div class="col-md-6">
+      <div class="row">
+        <div class="col-sm-9">
+          <h5 class="text-center" style="color: #666"><b>按部门统计件数</b></h5>
+          <canvas id="myChart" width="160" height="140"></canvas>
+        </div>
+        <div class="col-sm-3">
+            <% panel_color_a = ["primary", "success", "info", "warning", "danger"] %>
+            <div class="panel panel-<%= panel_color_a.shuffle.first %>">
+              <div class="panel-heading">
+                点击分析原因：
+              </div>
+              <div class="panel panel-body">
+                <div class="row">
+                  <% @department_hash_file.each do |k, v| %>
+                    <div class="col-xs-6">
+                      <%= render_rand_color_btn(k,"#", "reason_#{v}", "btn-xs") %>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+      <canvas id="myChart_2" width="200" height="140"></canvas>
+      </div>
+      <div class="col-md-6">
+        <div class="row">
+          <div class="col-sm-9">
+            <h5 class="text-center" style="color: #666"><b>按处理方式统计件数</b></h5>
+            <canvas id="myChart_3" width="160" height="140"></canvas>
+          </div>
+          <div class="col-sm-3">
+              <div class="panel panel-<%= panel_color_a.shuffle.first %>">
+                <div class="panel-heading">
+                  点击分析原因：
+                </div>
+                <div class="panel panel-body">
+                  <div class="row">
+                    <% @deal_method_hash_file.each do |k, v| %>
+                      <div class="col-xs-6">
+                        <%= render_rand_color_btn(k,"#", "reason_#{v}", "btn-xs") %>
+                      </div>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+          </div>
+        </div>
+        <canvas id="myChart_4" width="200" height="140"></canvas>
+        </div>
+  </div>
+  <!--======================== 图表结束 ========================-->
+
+<!--======================== 查看原因 ========================-->
+
+<%= link_to "分析所有异常原因", check_reason_abnormals_path, id: "all_reason_btn", class: "btn btn-success btn-lg btn-block" %>
+
+
+<!--======================== 查看原因结束 ========================-->
+
+
+
+
+
+<div class="container-fluid page">
+<div class="row">
+
+
+  <div class="pull-right">
+
   </div>
   <br>
   <table class="table table-striped table-bordered table-hover">
@@ -30,7 +109,7 @@
         <th>客户</th>
         <th>制工袋</th>
         <th>款号</th>
-        <th>图片</th>
+        <th width="100px">图片</th>
         <th>版交期/出货期</th>
         <th>件数</th>
         <th>业务</th>
@@ -87,45 +166,40 @@
     </tbody>
   </table>
 
-  <!-- overlay -->
-  <div id="overlay">
-    <div id="text_1" style= "display: none;" class="text-center">
-    <i  class="fa fa-spinner fa-spin fa-fw"></i>
-    正在生成数据，请稍等~
-    </div>
-    <div id="text_2" style="display: none;" class="text-center">
-      已生成数据，尽快下载哦~
-      <br>
-      <%= link_to "立即下载", "/", class: "btn btn-info btn-bg", id: "download_file_btn" %>
-    </div>
-  </div>
+
+</div>
+</div>
 </div>
 
+<!--======================== 以下是overlay ========================-->
+<div id="overlay"  onclick="off()">
+  <div id="text_1" style= "display: none;" class="text-center">
+  <i  class="fa fa-spinner fa-spin fa-fw"></i>
+  正在生成数据，请稍等~
+  </div>
+  <div id="text_2" style="display: none;" class="text-center">
+    已生成数据，尽快下载哦~
+    <br>
+    <%= link_to "立即下载", "/", class: "btn btn-info btn-bg", id: "download_file_btn" %>
+  </div>
+<!--=========== 以下是显示word cloud ===========-->
+  <div id="word_cloud_container" style="display: none; overflow-x: auto; overflow-y: auto; height: 98%; width:98%; margin: auto; margin-top: 1%"></div>
+<!--=========== 显示word cloud结束 ===========-->
+</div>
+<!--======================== 以上是overlay ========================-->
+
 <!--======================== 时间戳辅助 ========================-->
-<%= hidden_field_tag :foo, params[:start_date_input], :value => @start_date.to_s %>
-<%= hidden_field_tag :foo, params[:end_date_input], :value => @end_date.present? ? @end_date.to_s : Time.now.to_s%>
+<%= hidden_field_tag :start_on, params[:start_date_input], :value => @start_date.to_s %>
+<%= hidden_field_tag :end_on, params[:end_date_input], :value => @end_date.present? ? @end_date.to_s : Time.now.to_s%>
 <!--======================== 时间辅助结束 ========================-->
 
 
-<!--======================== 生成图表 ========================-->
-<div class="row">
-  <div class="col-md-6">
-    <canvas id="myChart" width="200" height="140"></canvas>
-    <canvas id="myChart_2" width="200" height="140"></canvas>
-    </div>
-  <div class="col-md-6">
-    <canvas id="myChart_3" width="200" height="140"></canvas>
-    <canvas id="myChart_4" width="200" height="140"></canvas>
-  </div>
-</div>
-<!--======================== 图表结束 ========================-->
-<%= link_to "查看原因", check_reason_abnormals_path, class: "btn btn-success btn-lg btn-block" %>
-
-<div class="contentRight"></div>
-<%= link_to "哈哈", "#", id: "sidebar" %>
-
 
 <!--======================== html结束 ========================-->
+
+
+
+<!--======================== 以下是JS ========================-->
   <script type="text/javascript">
 
   var ctx = document.getElementById("myChart");
@@ -142,12 +216,16 @@
   $("#download_excel_btn").click(function(evt){
     evt.preventDefault();
     var url = "<%= download_excel_abnormals_url %>"
+    var start_on = $("#start_on").val();
+    var end_on = $("#end_on").val();
     // 送出 Ajax
     $.ajax({
       url: url,
       method: 'get',
        dataType: 'json',
+       data: { start_on: start_on, end_on: end_on },
        beforeSend: function(){
+         $("#word_cloud_container").css("display", "none");
          $("#overlay").css("height", "100%");
          $("#text_1").css("display", "block");
        },
@@ -168,7 +246,7 @@
   })
 
   // 日期输入框的js辅助
-  $("#strat_date").datepicker({ format: "yyyy-mm-dd", language: "<%= I18n.locale %>" });
+  $("#start_date").datepicker({ format: "yyyy-mm-dd", language: "<%= I18n.locale %>" });
   $("#end_date").datepicker({ format: "yyyy-mm-dd", language: "<%= I18n.locale %>" });
 
 
@@ -176,16 +254,58 @@
 
 
 
-  // 第二种方法加载页面：jQuery $.ajax
-  
-  function ajaxload(local){
-      htmlobj=$.ajax({url:local,async:false});
-      $(".contentRight").html(htmlobj.responseText);
+  //异步加载word cloud
+  function get_word_cloud(url){
+    $.ajax({
+      url: url,
+      type:'get',
+      dataType:'html',
+      beforeSend: function(){
+        $("#word_cloud_container").css("display", "none");
+        $("#overlay").css("height", "100%");
+        $("#text_1").css("display", "block");
+      },
+      success:function(data){
+        $("#text_1").fadeOut();
+        $("#word_cloud_container").html(data);
+        $("#word_cloud_container").fadeIn();
+      }
+    });
   }
-  $("#sidebar").click(function(){
-      ajaxload('/abnormals/word_cloud')
-   return false;
-  });
+
+
+
+  <% @deal_method_hash_file.each do |k, v| %>
+    $("#reason_<%= v %>").click(function(){
+        get_word_cloud('/abnormals/word_cloud' + "?file_name=" + "<%= v %>");
+     return false;
+    });
+  <% end %>
+
+
+  <% @department_hash_file.each do |k, v| %>
+    $("#reason_<%= v %>").click(function(){
+      get_word_cloud('/abnormals/word_cloud' + "?file_name=" + "<%= v %>");
+    return false;
+    });
+  <% end %>
+
+  $("#all_reason_btn").click(function(){
+    get_word_cloud('/abnormals/word_cloud' + "?file_name=" + "<%= @all_reason_file %>");
+    return false;
+  })
+
+  $(document).ready(function(){
+    $.ajax({
+      url: "/abnormals/word_cloud" + "?file_name=" + "<%= @department_hash_file.values.last %>",
+      type:'get',
+      dataType:'html',
+      success:function(data){
+        $("#word_cloud_container").html(data);
+      }
+    });
+  })
+
 
 
 

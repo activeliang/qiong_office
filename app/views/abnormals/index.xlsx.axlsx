@@ -13,32 +13,59 @@ wb = xlsx_package.workbook
     sheet.add_row ["日期", "客户", "制式袋", "款号", "图片", "件数", "版交期/出货期", "业务", "负责人", "异常原因", "当事人", "部门", "新交期","备注"], :style => head
     sum = 0
 
-    @abnormals.each do |r|
+        @abnormals.each do |r|
+          sum += 1
 
-    sum += 1
-
-
-
-    #指定图片路径
-    img = File.expand_path("#{Rails.root}/public/images/#{r.envelop}.png", __FILE__)
+          #指定图片路径
+          img = File.expand_path("#{Rails.root}/public/images/#{r.envelop}.png", __FILE__)
 
 
-    #在表格中插入图片
-    sheet.add_image(:image_src => img, :noSelect => true, :noMove => true) do |image|
-      image.width=90
-      image.height=90
-      image.start_at 4, sum
+          #在表格中插入图片
+          sheet.add_image(:image_src => img, :noSelect => true, :noMove => true) do |image|
+            image.width=90
+            image.height=90
+            image.start_at 4, sum
+          end
+
+          #插入正文内容
+          sheet.add_row [r.input_time.strftime("%y-%m-%d"), r.client, r.envelop, r.model_no, '', r.quantity, r.raw_delivery, r.merchandiser, r.principal, r.reason, r.faulter, r.department, r.new_delivery, r.remarks], :height => 70, :style => black_cell
+          search_envelop_url = "http://www.diastarasia.com/Diastar/Envelop.do?action=searchEnvelop&envelopID=" + r.envelop if r.envelop.present?
+
+          #插入制工袋超链接
+          if search_envelop_url.present?
+            sheet.add_hyperlink :location => search_envelop_url, :ref => sheet.rows[sum].cells[2]
+          end
+          sheet.column_widths nil, nil, nil, nil, 12
+        end
+
+  end
+
+
+
+  #插入图表
+  wb.add_worksheet(:name => "按部门分类统计") do |sheet|
+    sheet.add_row ["按部门统计分类"]
+    chart_sum = 1
+    @department_hash.each { |k, v|
+    chart_sum += 1
+    sheet.add_row [k, v, (v.to_f / @department_hash.values.reduce(:+).to_f * 100).round.to_i.to_s + '%' ]}
+    sheet.add_chart(Axlsx::Pie3DChart, :start_at => [4,3], :end_at => [10, 20], :title => "按部门统计分类") do |chart|
+      chart.add_series :data => sheet["B2:B#{chart_sum}"], :labels => sheet["A2:A#{chart_sum}"],  :colors => ['FF0000', '00FF00', '0000FF']
     end
-
-    #插入正文内容
-    sheet.add_row [r.input_time.strftime("%y-%m-%d"), r.client, r.envelop, r.model_no, '', r.quantity, r.raw_delivery, r.merchandiser, r.principal, r.reason, r.faulter, r.department, r.new_delivery, r.remarks], :height => 70, :style => black_cell
-    search_envelop_url = "http://www.diastarasia.com/Diastar/Envelop.do?action=searchEnvelop&envelopID=" + r.envelop
-
-    #插入制工袋超链接
-    sheet.add_hyperlink :location => search_envelop_url, :ref => sheet.rows[sum].cells[2]
-    sheet.column_widths nil, nil, nil, nil, 12
   end
 
+  wb.add_worksheet(:name => "按处理方式分类统计") do |sheet|
+    sheet.add_row ["按处理方式统计分类"]
+    chart_sum = 1
+    @deal_method_hash.each { |k, v|
+    chart_sum += 1
+    sheet.add_row [k, v, (v.to_f / @deal_method_hash.values.reduce(:+).to_f * 100).round.to_i.to_s + '%' ]}
+    sheet.add_chart(Axlsx::Pie3DChart, :start_at => [4,3], :end_at => [10, 20], :title => "按处理方式统计分类") do |chart|
+      chart.add_series :data => sheet["B2:B#{chart_sum}"], :labels => sheet["A2:A#{chart_sum}"],  :colors => ['FF0000', '00FF00', '0000FF']
+    end
   end
 
-end
+
+
+
+  end
