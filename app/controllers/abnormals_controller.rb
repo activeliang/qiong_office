@@ -81,6 +81,8 @@ class AbnormalsController < ApplicationController
         @department_hash_file = {}
         @deal_method_hash_file = {}
         @all_reason_file = SecureRandom.hex 6
+        GenerateWordArrayJob.perform_later("all", "all", @start_date.to_s, (@end_date.to_s if @end_date.to_s.present?), @all_reason_file)
+
 
         @department_hash.each do |k, v|
           file_name = SecureRandom.hex 6
@@ -94,7 +96,6 @@ class AbnormalsController < ApplicationController
           @deal_method_hash_file[k] = file_name
         end
 
-        GenerateWordArrayJob.perform_later("all", "all", @start_date.to_s, (@end_date.to_s if @end_date.to_s.present?), @all_reason_file)
         @abnormals = Abnormal.paginate(:page => params[:page], :per_page => 30)
       }
     end
