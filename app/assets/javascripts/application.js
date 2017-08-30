@@ -15,11 +15,7 @@
 //= require bootstrap-sprockets
 //= require bootstrap-datepicker/core
 //= require bootstrap-datepicker/locales/bootstrap-datepicker.zh-CN
-
-//= require d3.min
-//= require ga
 //= require pielabel
-//= require cloud.min
 //= require_tree .
 
 
