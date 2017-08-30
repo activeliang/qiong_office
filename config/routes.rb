@@ -10,6 +10,9 @@ Rails.application.routes.draw do
       post :check_reason
       get :word_cloud
     end
+    member do
+      post :update_envelop
+    end
   end
   resources :imports do
     member do

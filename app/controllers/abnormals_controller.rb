@@ -1,6 +1,6 @@
 class AbnormalsController < ApplicationController
-  before_action :find_abnormal, only: [:destroy, :edit, :update]
-  before_action :authenticate_user!, only: [:new, :create, :edit, :update, :word_cloud, :destroy, :import]
+  before_action :find_abnormal, only: [:destroy, :edit, :update, :update_envelop]
+  before_action :authenticate_user!, only: [:new, :create, :edit, :update,  :destroy, :import]
   def  index
     # //时间的筛选
     if params[:start_on].present?
@@ -13,7 +13,7 @@ class AbnormalsController < ApplicationController
     end
 
     if !params[:start_on].present? && !params[:end_on].present?
-      # 默认为筛选最近三个月资料
+      # 默认为筛选最近3个月资料
       @abnormals = Abnormal.where( "input_time >= ?", Time.now.months_ago(2).at_beginning_of_month )
       @start_date = Time.now.months_ago(2).at_beginning_of_month
     end
@@ -145,6 +145,7 @@ class AbnormalsController < ApplicationController
       GetEnvelopDetailJob.perform_later(@abnormal.id) if envelop != params[:abnormal][:envelop]
       redirect_to abnormals_path, notice: "编辑成功！"
     else
+      binding.pry
       render :edit, alert: "编辑失败！"
     end
   end
@@ -167,7 +168,11 @@ class AbnormalsController < ApplicationController
     end
   end
 
-
+  def update_envelop
+    if @abnormal.envelop.present?
+      GetEnvelopDetailJob.perform_later(@abnormal.id)
+    end
+  end
 
 
 

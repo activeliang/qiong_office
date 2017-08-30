@@ -158,8 +158,9 @@
           <td><%= render_content_display abnormal.new_delivery.to_s.sub(/\A20/, ''), "success", "success" %></td>
           <td><%= abnormal.remarks %></td>
           <td>
-            <%= link_to "编辑", edit_abnormal_path(abnormal), class: "btn btn-info btn-sm" %>
-            <%= link_to "删除", abnormal_path(abnormal), method: :delete, "data-confirm": "确定要删除吗？", class: "btn btn-danger btn-sm" %>
+            <%= link_to "编辑", edit_abnormal_path(abnormal), class: "btn btn-info btn-xs" %>
+            <%= link_to "删除", abnormal_path(abnormal), method: :delete, "data-confirm": "确定要删除吗？", class: "btn btn-danger btn-xs" %>
+            <%= link_to "Get", update_envelop_abnormal_path(abnormal), method: :post, class: "btn btn-default btn-xs" %>
           </td>
         </tr>
       <% end %>
