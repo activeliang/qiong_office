@@ -11,7 +11,7 @@ wb = xlsx_package.workbook
     start_m = @start_date.present? ? @start_date.strftime("%Y-%m-%d") : "#{Date.today.month - 2}月1日"
     end_m = @end_date.present? ? @end_date.strftime("%Y-%m-%d") : "今天"
 
- wb.add_worksheet(name: "#{start_m} ~ #{end_m}异常记录, :print_options => options, :page_margins => margins) do |sheet|
+ wb.add_worksheet(name: "#{start_m} ~ #{end_m}异常记录", :print_options => options, :page_margins => margins) do |sheet|
 
     #增加表头
     sheet.add_row ["日期", "客户", "制式袋", "款号", "图片", "件数", "版交期/出货期", "业务", "负责人", "异常原因", "当事人", "部门", "新交期","备注"], :style => head
