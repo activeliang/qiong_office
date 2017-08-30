@@ -52,10 +52,13 @@ class AbnormalsController < ApplicationController
           end
 
           #把图片下载回本地
-          unless File.exist?("#{Rails.root}/public/images/#{r.envelop}.png")
-            data=open(get_image_url){|f|f.read}
-            open("#{Rails.root}/public/images/#{r.envelop}.png","wb"){|f|f.write(data)}
+          if r.image.present?
+            unless File.exist?("#{Rails.root}/public/images/#{r.envelop}.png")
+              data=open(get_image_url){|f|f.read}
+              open("#{Rails.root}/public/images/#{r.envelop}.png","wb"){|f|f.write(data)}
+            end
           end
+          
         end
       }
 
