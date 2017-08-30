@@ -46,14 +46,24 @@ class AbnormalsController < ApplicationController
     respond_to do |format|
 
       format.xlsx{
+        require 'open-uri'
         @abnormals.each do |r|
 
           #把图片下载回本地
           if r.image.present?
-            unless File.exist?("#{Rails.root}/public/images/#{r.envelop}.jpg")
-              data=open(r.image.thumb.url){|f|f.read}
-              open("#{Rails.root}/public/images/#{r.envelop}.jpg","wb"){|f|f.write(data)}
+
+            if r.envelop.present?
+              unless File.exist?("#{Rails.root}/public/images/#{r.envelop}.jpg")
+                data=open(r.image.thumb.url){|f|f.read}
+                open("#{Rails.root}/public/images/#{r.envelop}.jpg","wb"){|f|f.write(data)}
+              end
+            elsif r.model_no.present?
+              unless File.exist?("#{Rails.root}/public/images/#{r.model_no}.jpg")
+                data=open(r.image.thumb.url){|f|f.read}
+                open("#{Rails.root}/public/images/#{r.model_no}.jpg","wb"){|f|f.write(data)}
+              end
             end
+
           end
 
         end
