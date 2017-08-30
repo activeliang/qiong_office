@@ -96,7 +96,7 @@ class AbnormalsController < ApplicationController
           @deal_method_hash_file[k] = file_name
         end
 
-        @abnormals = Abnormal.paginate(:page => params[:page], :per_page => 30)
+        @abnormals = @abnormals.paginate(:page => params[:page], :per_page => 30)
       }
     end
   end
