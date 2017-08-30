@@ -16,6 +16,7 @@
 //= require bootstrap-datepicker/core
 //= require bootstrap-datepicker/locales/bootstrap-datepicker.zh-CN
 //= require pielabel
+//= require chartsjs-plugin-data-labels
 //= require_tree .
 
 
