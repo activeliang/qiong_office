@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170824105622) do
+ActiveRecord::Schema.define(version: 20170830170900) do
 
   create_table "abnormals", force: :cascade do |t|
     t.string   "envelop"
@@ -31,6 +31,21 @@ ActiveRecord::Schema.define(version: 20170824105622) do
     t.datetime "updated_at",               null: false
     t.integer  "import_id"
     t.string   "deal_method"
+  end
+
+  create_table "delayed_jobs", force: :cascade do |t|
+    t.integer  "priority",   default: 0, null: false
+    t.integer  "attempts",   default: 0, null: false
+    t.text     "handler",                null: false
+    t.text     "last_error"
+    t.datetime "run_at"
+    t.datetime "locked_at"
+    t.datetime "failed_at"
+    t.string   "locked_by"
+    t.string   "queue"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["priority", "run_at"], name: "delayed_jobs_priority"
   end
 
   create_table "form_options", force: :cascade do |t|
