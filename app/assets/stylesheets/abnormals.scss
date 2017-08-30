@@ -75,3 +75,16 @@ input#start_date {
 .btn:hover{
   background: translate;
 }
+// 以下是分页的链接
+.pagination a {
+    border: 1px solid;
+    padding: 6px;
+}
+em.current {
+    padding: 7px;
+    background: #2e6ab1;
+}
+span.previous_page.disabled {
+    border: 1px solid #999;
+    padding: 7px;
+}

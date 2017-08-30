@@ -1,6 +1,6 @@
 class AbnormalsController < ApplicationController
   before_action :find_abnormal, only: [:destroy, :edit, :update]
-
+  before_action :authenticate_user!, only: [:new, :create, :edit, :update, :word_cloud, :destroy, :import]
   def  index
     # //时间的筛选
     if params[:start_on].present?
@@ -31,11 +31,15 @@ class AbnormalsController < ApplicationController
           abnormal.department.split("&").each do |d|
             @department_hash[d] += abnormal.quantity
           end
+        else
+          @department_hash["其他"] += abnormal.quantity
         end
         if abnormal.deal_method.present?
           abnormal.deal_method.split("&").each do |d|
             @deal_method_hash[d] += abnormal.quantity
           end
+        else
+          @deal_method_hash["其他"] += abnormal.quantity
         end
       end
     # 根据请求格式分开响应
@@ -52,13 +56,12 @@ class AbnormalsController < ApplicationController
           end
 
           #把图片下载回本地
-          if r.image.present?
             unless File.exist?("#{Rails.root}/public/images/#{r.envelop}.png")
               data=open(get_image_url){|f|f.read}
               open("#{Rails.root}/public/images/#{r.envelop}.png","wb"){|f|f.write(data)}
             end
-          end
-          
+
+
         end
       }
 
@@ -88,7 +91,7 @@ class AbnormalsController < ApplicationController
         end
 
         GenerateWordArrayJob.perform_later("all", "all", @start_date.to_s, (@end_date.to_s if @end_date.to_s.present?), @all_reason_file)
-        # binding.pry
+        @abnormals = Abnormal.paginate(:page => params[:page], :per_page => 30)
       }
     end
   end

@@ -36,7 +36,8 @@
             <% panel_color_a = ["primary", "success", "info", "warning", "danger"] %>
             <div class="panel panel-<%= panel_color_a.shuffle.first %>">
               <div class="panel-heading">
-                点击分析原因：
+                <i class="fa fa-line-chart" aria-hidden="true"></i>
+                 点击分析原因：
               </div>
               <div class="panel panel-body">
                 <div class="row">
@@ -61,7 +62,8 @@
           <div class="col-sm-3">
               <div class="panel panel-<%= panel_color_a.shuffle.first %>">
                 <div class="panel-heading">
-                  点击分析原因：
+                  <i class="fa fa-line-chart" aria-hidden="true"></i>
+                   点击分析原因：
                 </div>
                 <div class="panel panel-body">
                   <div class="row">
@@ -82,9 +84,10 @@
 
 <!--======================== 查看原因 ========================-->
 
-<%= link_to "分析所有异常原因", check_reason_abnormals_path, id: "all_reason_btn", class: "btn btn-success btn-lg btn-block" %>
-
-
+<%= link_to check_reason_abnormals_path, id: "all_reason_btn", class: "btn btn-success btn-lg btn-block"  do %>
+  <i class="fa fa-lg fa-lightbulb-o" aria-hidden="true"></i>
+  点击立即分析所有异常原因
+<% end %>
 <!--======================== 查看原因结束 ========================-->
 
 
@@ -162,6 +165,10 @@
       <% end %>
     </tbody>
   </table>
+
+      <div class="text-center">
+        <%= will_paginate @posts %>
+      </div>
 
 
 </div>

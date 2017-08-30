@@ -21,18 +21,15 @@ wb = xlsx_package.workbook
           sum += 1
 
           #指定图片路径
-          if r.image.present?
             img = File.expand_path("#{Rails.root}/public/images/#{r.envelop}.png", __FILE__)
-          end
+
 
           #在表格中插入图片
-          if r.image.present?
             sheet.add_image(:image_src => img, :noSelect => true, :noMove => true) do |image|
               image.width=90
               image.height=90
               image.start_at 4, sum
             end
-          end
 
           #插入正文内容
           sheet.add_row [r.input_time.strftime("%y-%m-%d"), r.client, r.envelop, r.model_no, '', r.quantity, r.raw_delivery, r.merchandiser, r.principal, r.reason, r.faulter, r.department, r.new_delivery, r.remarks], :height => 70, :style => black_cell
