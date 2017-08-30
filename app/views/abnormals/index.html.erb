@@ -127,7 +127,9 @@
       <% @abnormals.each do |abnormal| %>
         <tr>
           <td>
-            <%= render_content_display abnormal.input_time.strftime("%y-%m-%d"), "success"%>
+            <% if abnormal.input_time.present? %>
+              <%= render_content_display abnormal.input_time.strftime("%y-%m-%d"), "success"%>
+            <% end %>
           </td>
           <td><%= abnormal.client %></td>
           <td>
