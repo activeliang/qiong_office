@@ -26,3 +26,4 @@
 /public/images/*.jpg
 /public/uploads
 /public/wordarray/*.txt
+/public/office/*.xlsx

@@ -47,27 +47,7 @@ class AbnormalsController < ApplicationController
     respond_to do |format|
 
       format.xlsx{
-        require 'open-uri'
-        @abnormals.each do |r|
 
-          #把图片下载回本地
-          if r.image.present?
-
-            if r.envelop.present?
-              unless File.exist?("#{Rails.root}/public/images/#{r.envelop}.jpg")
-                data = RestClient.get(r.image.thumb.url).body
-                open("#{Rails.root}/public/images/#{r.envelop}.jpg","wb"){|f|f.write(data)}
-              end
-            elsif r.model_no.present?
-              unless File.exist?("#{Rails.root}/public/images/#{r.model_no}.jpg")
-                data = RestClient.get(r.image.thumb.url).body
-                open("#{Rails.root}/public/images/#{r.model_no}.jpg","wb"){|f|f.write(data)}
-              end
-            end
-
-          end
-
-        end
       }
 
 
@@ -165,6 +145,46 @@ class AbnormalsController < ApplicationController
   end
 
   def download_excel
+
+    # //时间的筛选
+    if params[:start_on].present?
+      @abnormals = Abnormal.where( "input_time >= ?", Date.parse(params[:start_on]).beginning_of_day )
+      @start_date = Date.parse(params[:start_on]).beginning_of_day
+    end
+    if params[:end_on].present?
+      @abnormals = @abnormals.where( "input_time <= ?", Date.parse(params[:end_on]).end_of_day )
+      @end_date = Date.parse(params[:end_on]).end_of_day
+    end
+
+    if !params[:start_on].present? && !params[:end_on].present?
+      # 默认为筛选最近3个月资料
+      @abnormals = Abnormal.where( "input_time >= ?", Time.now.months_ago(2).at_beginning_of_month )
+      @start_date = Time.now.months_ago(2).at_beginning_of_month
+    end
+    # 时间筛选结束
+
+
+    @abnormals.each do |r|
+
+      #把图片下载回本地
+      if r.image.present?
+
+        if r.envelop.present?
+          unless File.exist?("#{Rails.root}/public/images/#{r.envelop}.jpg")
+            data = RestClient.get(r.image.thumb.url).body
+            open("#{Rails.root}/public/images/#{r.envelop}.jpg","wb"){|f|f.write(data)}
+          end
+        elsif r.model_no.present?
+          unless File.exist?("#{Rails.root}/public/images/#{r.model_no}.jpg")
+            data = RestClient.get(r.image.thumb.url).body
+            open("#{Rails.root}/public/images/#{r.model_no}.jpg","wb"){|f|f.write(data)}
+          end
+        end
+
+      end
+
+    end
+
     data=open("#{abnormals_url(format: "xlsx", start_on: params[:start_on], end_on: params[:end_on])}"){|f|f.read}
     time = Time.now.in_time_zone(8).strftime("%m-%d %H:%M")
     open("#{Rails.root}/public/office/#{time}.xlsx","wb"){|f|f.write(data)}
