@@ -127,12 +127,12 @@ class AbnormalsController < ApplicationController
 
   def update
 
-    @abnormal.envelop = params[:abnormal][:envelop].gsub(/\s/, '')
-    @abnormal.model_no = params[:abnormal][:model_no].gsub(/\s/, '')
-    @abnormal.department = params[:abnormal][:department].map{|x| x.split(" ").join("&")}.join('&')
-    @abnormal.faulter = params[:abnormal][:faulter].split(' ').join('&')
-    @abnormal.deal_method = params[:abnormal][:deal_method].map{|x| x.split(" ").join("&")}.join('&')
-    
+    @abnormal.envelop = params[:abnormal][:envelop].gsub(/\s/, '') if params[:abnormal][:envelop].present?
+    @abnormal.model_no = params[:abnormal][:model_no].gsub(/\s/, '') if params[:abnormal][:model_no].present?
+    @abnormal.department = params[:abnormal][:department].map{|x| x.split(" ").join("&")}.join('&') if params[:abnormal][:department].join.present?
+    @abnormal.faulter = params[:abnormal][:faulter].split(' ').join('&') if params[:abnormal][:faultet].present?
+    @abnormal.deal_method = params[:abnormal][:deal_method].map{|x| x.split(" ").join("&")}.join('&') if params[:abnormal][:deal_method].join.present?
+    binding.pry
 
     envelop = @abnormal.envelop
     if @abnormal.update(abnormal_params)

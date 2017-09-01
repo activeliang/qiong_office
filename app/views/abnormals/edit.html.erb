@@ -4,7 +4,7 @@
 
   <%= simple_form_for @abnormal do |f| %>
     <%= f.label :input_time, "日期" %>
-    <%= f.text_field :input_time, :value => Date.today.strftime("%Y-%m-%d"), :class => "form-control" %> <br>
+    <%= f.text_field :input_time, :value => @abnormal.input_time.strftime("%Y-%m-%d"), :class => "form-control" %> <br>
     <%= f.input :client, label: "客户" %>
     <%= f.input :envelop, placeholder: "只能输一个", label: "制工袋" %>
     <%= f.input :model_no, label: "款号" %>
@@ -34,7 +34,7 @@
 
     <hr>
     <%= f.label :new_delivery, "新交期" %>
-    <%= f.text_field :new_delivery,:value => Date.today.strftime("%Y-%m-%d"), :class => "form-control" %>
+    <%= f.text_field :new_delivery,:value => @abnormal.new_delivery, :class => "form-control" %>
 
     <!--======================== 多选项：处理方式 ========================-->
 
