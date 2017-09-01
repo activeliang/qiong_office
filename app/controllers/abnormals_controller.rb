@@ -1,6 +1,7 @@
 class AbnormalsController < ApplicationController
   before_action :find_abnormal, only: [:destroy, :edit, :update, :update_envelop]
-  before_action :authenticate_user!, only: [:new, :create, :edit, :update,  :destroy, :import]
+  before_action :admin_required, only: [:new, :create, :edit, :update, :destroy, :import, :update_envelop]
+
   def  index
     # //时间的筛选
     if params[:start_on].present?
@@ -96,7 +97,7 @@ class AbnormalsController < ApplicationController
           @deal_method_hash_file[k] = file_name
         end
 
-        @abnormals = @abnormals.paginate(:page => params[:page], :per_page => 30)
+        @abnormals = @abnormals.order(id: "desc").paginate(:page => params[:page], :per_page => 30)
       }
     end
   end
@@ -116,9 +117,9 @@ class AbnormalsController < ApplicationController
     @abnormal = Abnormal.new(abnormal_params)
     @abnormal.envelop = params[:abnormal][:envelop].gsub(/\s/, '')
     @abnormal.model_no = params[:abnormal][:model_no].gsub(/\s/, '')
-    @abnormal.department = params[:abnormal][:department].join('&')
+    @abnormal.department = params[:abnormal][:department].map{|x| x.split(" ").join("&")}.join('&')
     @abnormal.faulter = params[:abnormal][:faulter].split(' ').join('&')
-    @abnormal.deal_method = params[:abnormal][:deal_method].join('&')
+    @abnormal.deal_method = params[:abnormal][:deal_method].map{|x| x.split(" ").join("&")}.join('&')
     if @abnormal.save
 
       if @abnormal.envelop.present?
@@ -147,7 +148,15 @@ class AbnormalsController < ApplicationController
   def update
     envelop = @abnormal.envelop
     if @abnormal.update(abnormal_params)
-      GetEnvelopDetailJob.perform_later(@abnormal.id) if envelop != params[:abnormal][:envelop]
+      if envelop != params[:abnormal][:envelop]
+
+        if @abnormal.envelop.present?
+          GetEnvelopDetailJob.perform_later(@abnormal.id)
+        elsif @abnormal.model_no.present?
+          GetModelNoDetailJob.perform_later(@abnormal.id)
+        end
+
+      end
       redirect_to abnormals_path, notice: "编辑成功！"
     else
       binding.pry
@@ -176,7 +185,10 @@ class AbnormalsController < ApplicationController
   def update_envelop
     if @abnormal.envelop.present?
       GetEnvelopDetailJob.perform_later(@abnormal.id)
+    elsif @abnormal.model_no.present?
+      GetModelNoDetailJob.perform_later(@abnormal.id)
     end
+    redirect_to :back, notice: "已提交更新~！"
   end
 
 

@@ -20,7 +20,11 @@
       <%= submit_tag "导入CSV数据", class: "btn btn-info btn-sm" %>
     <% end %>
     <%= link_to "新增记录", new_abnormal_path, class: "btn btn-sm btn-primary pull-left" %>
-    <%= link_to "导出excel",abnormals_path(:format => "xlsx"), id: "download_excel_btn", class: "btn btn-sm btn-success" %>
+    <% if current_user && current_user.is_admin? %>
+      <%= link_to "导出Excel",abnormals_path(:format => "xlsx"), id: "download_excel_btn", class: "btn btn-sm btn-success" %>
+    <% else %>
+      <button type="button" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="top" title="您不是管理员哦~">导出Excel</button>
+    <% end %>
   </div>
   <br><br><br>
   <legend class="text-center" style="color: #555;">当前位置：<%= render_date_helper(@start_date, @end_date) %>的异常记录</legend>
@@ -313,7 +317,9 @@
     });
   })
 
-
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+  })
 
 
 
