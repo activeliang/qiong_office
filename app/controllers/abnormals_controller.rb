@@ -126,14 +126,22 @@ class AbnormalsController < ApplicationController
   end
 
   def update
+
+    @abnormal.envelop = params[:abnormal][:envelop].gsub(/\s/, '')
+    @abnormal.model_no = params[:abnormal][:model_no].gsub(/\s/, '')
+    @abnormal.department = params[:abnormal][:department].map{|x| x.split(" ").join("&")}.join('&')
+    @abnormal.faulter = params[:abnormal][:faulter].split(' ').join('&')
+    @abnormal.deal_method = params[:abnormal][:deal_method].map{|x| x.split(" ").join("&")}.join('&')
+    
+
     envelop = @abnormal.envelop
     if @abnormal.update(abnormal_params)
       if envelop != params[:abnormal][:envelop]
 
-        if @abnormal.envelop.present?
-          GetEnvelopDetailJob.perform_later(@abnormal.id)
-        elsif @abnormal.model_no.present?
-          GetModelNoDetailJob.perform_later(@abnormal.id)
+        if abnormal.envelop.present?
+          GetEnvelopDetailJob.perform_later(abnormal.id)
+        elsif abnormal.model_no.present?
+          GetModelNoDetailJob.perform_later(abnormal.id)
         end
 
       end
