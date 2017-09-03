@@ -242,7 +242,6 @@
          $("#text_2").css("display", "none");
        },
        success: function(data){
-         alert(data["status"]);
          if (data["status"] == "success"){
            $("#download_file_btn").prop("href", data["download_url"]);
            get_excel_file_status(data["file_url"]);
