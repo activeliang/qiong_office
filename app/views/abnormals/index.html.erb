@@ -242,14 +242,33 @@
          $("#text_2").css("display", "none");
        },
        success: function(data){
+         alert(data["status"]);
          if (data["status"] == "success"){
-           $("#text_1").css("display", "none");
-           $("#text_2").css("display", "block");
            $("#download_file_btn").prop("href", data["download_url"]);
+           get_excel_file_status(data["file_url"]);
          }
        }
     })
   })
+
+  function get_excel_file_status(file_url){
+    var int = setInterval(function(){
+    $.ajax({
+      url: "/abnormals/excel_file_status",
+      method: "get",
+      dataType: "json",
+      data: {file_url: file_url},
+      success: function(data){
+        if (data["status"] == "ok") {
+          $("#text_1").css("display", "none");
+          $("#text_2").css("display", "block");
+          clearInterval(int);
+        }
+      }
+    })
+  }, 2000)
+  }
+
 
 
   $("#download_file_btn").click(function(){

@@ -2,6 +2,7 @@ class GetEnvelopDetailJob < ApplicationJob
   queue_as :default
 
   def perform(abnormal_id)
+    binding.pry
     abnormal = Abnormal.find(abnormal_id)
     response = RestClient.post 'www.diastarasia.com/Diastar/Envelop.do?action=searchEnvelop', {envelopID: abnormal.envelop.scan(/\d{6}/).first}
     doc = Nokogiri::HTML.parse(response.body).to_s

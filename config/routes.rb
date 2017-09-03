@@ -9,6 +9,7 @@ Rails.application.routes.draw do
       post :import
       post :check_reason
       get :word_cloud
+      get :excel_file_status
     end
     member do
       post :update_envelop
