@@ -242,7 +242,6 @@
          $("#text_2").css("display", "none");
        },
        success: function(data){
-         alert(data["status"]);
          if (data["status"] == "success"){
            $("#download_file_btn").prop("href", data["download_url"]);
            get_excel_file_status(data["file_url"]);
@@ -253,16 +252,13 @@
 
   function get_excel_file_status(file_url){
     var int = setInterval(function(){
-   alert(file_url);
     $.ajax({
       url: "/abnormals/excel_file_status",
       method: "get",
       dataType: "json",
       data: {file_url: file_url},
       success: function(data){
-        alert(data["status"]);
         if (data["status"] == "ok") {
-          alert(8);
           $("#text_1").css("display", "none");
           $("#text_2").css("display", "block");
           clearInterval(int);
