@@ -132,7 +132,6 @@ class AbnormalsController < ApplicationController
     @abnormal.department = params[:abnormal][:department].map{|x| x.split(" ").join("&")}.join('&') if params[:abnormal][:department].join.present?
     @abnormal.faulter = params[:abnormal][:faulter].split(' ').join('&') if params[:abnormal][:faultet].present?
     @abnormal.deal_method = params[:abnormal][:deal_method].map{|x| x.split(" ").join("&")}.join('&') if params[:abnormal][:deal_method].join.present?
-    binding.pry
 
     envelop = @abnormal.envelop
     if @abnormal.update(abnormal_params)
@@ -147,7 +146,6 @@ class AbnormalsController < ApplicationController
       end
       redirect_to abnormals_path, notice: "编辑成功！"
     else
-      binding.pry
       render :edit, alert: "编辑失败！"
     end
   end
