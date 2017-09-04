@@ -24,11 +24,11 @@ class GenerateExcelJob < ApplicationJob
 
         if r.envelop.present?
           unless File.exist?("#{Rails.root}/public/images/#{r.envelop}.jpg")
-            open("#{Rails.root}/public/images/#{r.envelop}.jpg","wb"){|f|f.write(open(r.image.thumb.url + "?imageView2/2/w/130"){|f|f.read})}
+            open("#{Rails.root}/public/images/#{r.envelop}.jpg","wb"){|f|f.write(RestClient.get(r.image.thumb.url + "?imageView2/2/w/130").body)}
           end
         elsif r.model_no.present?
           unless File.exist?("#{Rails.root}/public/images/#{r.model_no}.jpg")
-            open("#{Rails.root}/public/images/#{r.model_no}.jpg","wb"){|f|f.write(open(r.image.thumb.url + "?imageView2/2/w/130"){|f|f.read})}
+            open("#{Rails.root}/public/images/#{r.model_no}.jpg","wb"){|f|f.write(RestClient.get(r.image.thumb.url + "?imageView2/2/w/130").body)}
           end
         end
 
@@ -36,6 +36,6 @@ class GenerateExcelJob < ApplicationJob
 
     end
     down_url = "#{root_url}/abnormals.xlsx?start_on=#{start_on}&end_on=#{end_on}"
-    open("#{Rails.root}/public/office/#{file_name}.xlsx","wb"){|f|f.write(open(down_url){|f|f.read})}
+    open("#{Rails.root}/public/office/#{file_name}.xlsx","wb"){|f|f.write(RestClient.get(down_url).body)}
   end
 end
