@@ -23,7 +23,7 @@
 # Ignore application configuration
 /config/application.yml
 
-/public/images/*.jpg
+/public/images
 /public/uploads
 /public/wordarray/*.txt
 /public/office/*.xlsx
