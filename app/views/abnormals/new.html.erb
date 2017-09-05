@@ -15,12 +15,16 @@
     <%= f.label :principal, "负责人(单选)" %>
     <br>
     <% if @principal_option.present? %>
+    <div class="row">
     <% @principal_option.each do |option| %>
       <% unless option.empty? %>
-      <input id="abnormal_principal" name="abnormal[principal]" type="radio" value="<%= option %>" class="radio_1" />
-      <label for="abnormal[principal]"><%= option %></label>
+      <div class="col-sm-3 select-item">
+        <input id="abnormal_principal" name="abnormal[principal]" type="radio" value="<%= option %>" class="radio_1" />
+        <label for="abnormal[principal]"><%= option %></label>
+      </div>
       <% end %>
     <% end %>
+    </div>
     <% end %>
     <input id="abnormal_principal" name="abnormal[principal]" type="radio" class="radio_other_1" />
     <label for="abnormal[principal]">其他</label>
@@ -36,14 +40,16 @@
     <%= f.label :deal_method, "处理方式(多选)" %>
     <br>
     <% if @deal_method_option.present? %>
+    <div class="row">
       <% @deal_method_option.each do |option| %>
         <% unless option.empty? %>
-
-        <input id="abnormal[deal_method]" name="abnormal[deal_method][]" type="checkbox" value="<%= option %>" />
-        <label for="abnormal[deal_method]"><%= option %></label>
-
+        <div class="col-sm-3 select-item">
+          <input id="abnormal[deal_method]" name="abnormal[deal_method][]" type="checkbox" value="<%= option %>" />
+          <label for="abnormal[deal_method]"><%= option %></label>
+        </div>
         <% end %>
       <% end %>
+    </div>
     <% end %>
     <input id="check_other_1" type="checkbox" />
     <label for="abnormal[deal_method]">其他</label>
@@ -55,14 +61,18 @@
     <%= f.label :department, "部门(多选)" %>
     <br>
     <% if @department_option.present? %>
+    <div class="row">
       <% @department_option.each do |option| %>
         <% unless option.empty? %>
 
-        <input id="abnormal[department]" name="abnormal[department][]" type="checkbox" value="<%= option %>" />
-        <label for="abnormal[department]"><%= option %></label>
+        <div class="col-sm-3 select-item">
+          <input id="abnormal[department]" name="abnormal[department][]" type="checkbox" value="<%= option %>" />
+          <label for="abnormal[department]"><%= option %></label>
+        </div>
 
         <% end %>
       <% end %>
+    </div>
     <% end %>
     <input id="check_other_2" type="checkbox" />
     <label for="abnormal[department]">其他</label>
