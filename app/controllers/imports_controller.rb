@@ -1,5 +1,5 @@
 class ImportsController < ApplicationController
-
+  before_action :admin_required
   def  index
     @imports = Import.all
   end

@@ -263,7 +263,7 @@ class AbnormalsController < ApplicationController
         method = "重压"
       elsif str.scan(/倒/).present?
         method = "重倒"
-      elsif str.scan(/旧/).present?
+      elsif str.scan(/旧/).present? || str.scan(/废膜/).present?
         method = "废旧膜"
       elsif str.scan(/图/).present?
         method = "重画图"
