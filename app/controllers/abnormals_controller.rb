@@ -223,6 +223,8 @@ class AbnormalsController < ApplicationController
               GetModelNoDetailJob.set( wait: 1.minutes ).perform_later(abnormal.id)
             end
 
+            CheckFormFieldJob.set( wait: 1.minutes ).perform_later(row[8], abnormal.department.to_s.split("&"), abnormal.deal_method.to_s.split("&"))
+
             success += 1
         else
             failed += 1
