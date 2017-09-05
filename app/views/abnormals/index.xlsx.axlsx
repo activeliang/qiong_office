@@ -64,7 +64,7 @@ wb = xlsx_package.workbook
     chart_sum = 1
     @department_hash.each { |k, v|
     chart_sum += 1
-    sheet.add_row [k, v, (v.to_f / @department_hash.values.reduce(:+).to_f * 100).round.to_i.to_s + '%' ]}
+    sheet.add_row [k, v, (v.to_f / @department_hash.values.reduce(:+).to_f * 100).round(3).to_s + '%' ]}
     sheet.add_chart(Axlsx::Pie3DChart, :start_at => [4,3], :end_at => [10, 20], :title => "按部门统计分类") do |chart|
       chart.add_series :data => sheet["B2:B#{chart_sum}"], :labels => sheet["A2:A#{chart_sum}"],  :colors => ['FF0000', '00FF00', '0000FF']
     end
