@@ -137,9 +137,9 @@ class AbnormalsController < ApplicationController
     if @abnormal.update(abnormal_params)
       if envelop != params[:abnormal][:envelop]
 
-        if abnormal.envelop.present?
+        if @abnormal.envelop.present?
           GetEnvelopDetailJob.perform_later(abnormal.id)
-        elsif abnormal.model_no.present?
+        elsif @abnormal.model_no.present?
           GetModelNoDetailJob.perform_later(abnormal.id)
         end
 
@@ -265,7 +265,7 @@ class AbnormalsController < ApplicationController
         method = "重压"
       elsif str.scan(/倒/).present?
         method = "重倒"
-      elsif str.scan(/旧/).present? || str.scan(/废膜/).present?
+      elsif str.scan(/旧/).present?
         method = "废旧膜"
       elsif str.scan(/图/).present?
         method = "重画图"
