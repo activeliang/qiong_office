@@ -197,7 +197,7 @@ class AbnormalsController < ApplicationController
     success = 0
     failed = 0
     require 'csv'
-    import = Import.create
+    import = Import.new
       CSV.parse(csv_string)[1 .. -1].each do |row|
         if row[9].present?
           # binding.pry
@@ -235,6 +235,7 @@ class AbnormalsController < ApplicationController
       end
       import.update_column :status, "总共汇入 #{success} 笔，失败 #{failed} 笔"
       import.csv_yun = params[:csv_file]
+      import.remarks = params[:remarks]
       import.save
 
 

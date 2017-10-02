@@ -17,6 +17,7 @@
   <div class="col-sm-6 csv-form">
     <%= form_tag import_abnormals_path, multipart: true do %>
       <%= file_field_tag "csv_file" %>
+      <%= text_field_tag "remarks", nil,  placeholder: '导入备注' %>
       <%= submit_tag "导入CSV数据", class: "btn btn-info btn-sm" %>
     <% end %>
     <%= link_to "新增记录", new_abnormal_path, class: "btn btn-sm btn-primary pull-left" %>

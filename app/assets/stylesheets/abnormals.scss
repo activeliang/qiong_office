@@ -56,7 +56,11 @@ input::-webkit-input-placeholder {
 }
 input#csv_file {
     float: right;
-    width: 176px;
+    width: 150px;
+}
+input#remarks {
+    display: block;
+    width: 125px;
 }
 input.btn.btn-info.btn-sm {
     float: right;
