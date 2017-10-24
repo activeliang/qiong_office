@@ -5,7 +5,7 @@ class GetModelNoDetailJob < ApplicationJob
         model_no = abnormal.model_no
         url = "www.diastarasia.com/Diastar/loginAction.do?action=login"
         # 登入操作
-        login_resp = RestClient.post url,{userName: '2145', password: '8523698'}
+        login_resp = RestClient.post url,{userName: ENV["diastar_username"], password: ENV["diastar_password"]}
         cookies_id = login_resp.cookies.first[1]
         # 获取型号详情
         post_url = "http://www.diastarasia.com/Diastar/ModelNo.do?action=searchModelNo&SearchBy=ByModelNo&modelNo=" + model_no
