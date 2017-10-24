@@ -21,7 +21,6 @@ class GenerateWordArrayJob < ApplicationJob
         end
       end
 
-
       # 去除一些特殊符号字段
       reason_array = word_array.join("&").gsub(/\s/, "&").gsub(/\d{6}/, "").gsub(/、/, "").gsub(/\-\d/, "").gsub(/\n/, "")
       # 保存文件

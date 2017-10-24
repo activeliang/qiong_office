@@ -1,19 +1,12 @@
 class GetModelNoDetailJob < ApplicationJob
   queue_as :default
-
   def perform(abnormal_id)
-
     abnormal = Abnormal.find(abnormal_id)
-
         model_no = abnormal.model_no
-
         url = "www.diastarasia.com/Diastar/loginAction.do?action=login"
         # 登入操作
         login_resp = RestClient.post url,{userName: '2145', password: '8523698'}
-
-
         cookies_id = login_resp.cookies.first[1]
-
         # 获取型号详情
         post_url = "http://www.diastarasia.com/Diastar/ModelNo.do?action=searchModelNo&SearchBy=ByModelNo&modelNo=" + model_no
 
@@ -35,7 +28,6 @@ class GetModelNoDetailJob < ApplicationJob
   abnormal.remote_image_url = image_url
   abnormal.merchandiser = '' + genbanren + gendanren
   abnormal.save
-  # binding.pry
 
   end
 end

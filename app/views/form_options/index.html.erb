@@ -17,37 +17,35 @@
     <br>
   </div>
   <br>
-    
-    <table class="table table-striped table-bordered">
-      <thead>
+  <table class="table table-striped table-bordered">
+    <thead>
+      <tr>
+        <th>字段</th>
+        <th>内容</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @form_options.each do |f| %>
         <tr>
-          <th>字段</th>
-          <th>内容</th>
-          <th>操作</th>
+          <td><%= f.field %></td>
+          <td>
+            <% f.content.split('&').each do |item| %>
+              <%= content_tag(:span, "【") %>
+              <%= item %>
+              <%= link_to(content_tag(:i,"", class: "fa fa-trash"), delete_item_form_option_path(f, :item => item), "data-confirm": "确定要删除吗？", method: :post, class: "btn btn-xs")%>
+              <%= content_tag(:span, "】") %>
+            <% end %>
+          </td>
+          <td>
+            <%= form_tag form_option_path(f), method: :put do %>
+                <input type="text" value="" name="content" />
+              <%= submit_tag "增加", class: "btn btn-default btn-xs" %>
+            <% end %>
+          </td>
         </tr>
-      </thead>
-      <tbody>
-        <% @form_options.each do |f| %>
-          <tr>
-            <td><%= f.field %></td>
-            <td>
-              <% f.content.split('&').each do |item| %>
-                <%= content_tag(:span, "【") %>
-                <%= item %>
-                <%= link_to(content_tag(:i,"", class: "fa fa-trash"), delete_item_form_option_path(f, :item => item), "data-confirm": "确定要删除吗？", method: :post, class: "btn btn-xs")%>
-                <%= content_tag(:span, "】") %>
-              <% end %>
-            </td>
-            <td>
-              <%= form_tag form_option_path(f), method: :put do %>
-                  <input type="text" value="" name="content" />
-                <%= submit_tag "增加", class: "btn btn-default btn-xs" %>
-              <% end %>
-            </td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-
+      <% end %>
+    </tbody>
+  </table>
 
 </div>

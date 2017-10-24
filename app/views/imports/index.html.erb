@@ -15,7 +15,7 @@
         <td><%= import.id %></td>
         <td><%= import.created_at.strftime("%Y-%m-%d") %></td>
         <td><%= import.remarks %></td>
-        <td><%= link_to "下载", download_csv_import_path(import), class: "btn btn-info" %></td>
+        <td><%= link_to "下载", import.csv_yun.url, class: "btn btn-info" %></td>
         <td><%= import.status %></td>
         <td>
           <%= link_to "删除", import_path(import), method: :delete, class: "btn btn-danger", "data-confirm": "此操作将会删除此次导入的所有数据，确定吗？" %>
