@@ -12,5 +12,20 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require turbolinks
+//= require bootstrap-sprockets
+//= require bootstrap-datepicker/core
+//= require bootstrap-datepicker/locales/bootstrap-datepicker.zh-CN
+//= require pielabel
+//= require chartsjs-plugin-data-labels
 //= require_tree .
+
+
+
+//以下是微信二维码
+function on() {
+    document.getElementById("overlay").style.height = "100%";
+}
+
+function off() {
+    document.getElementById("overlay").style.height = "0";
+}

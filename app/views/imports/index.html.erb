@@ -1,0 +1,26 @@
+<h3>导入记录列表</h3>
+
+  <table class="table table-striped">
+    <thead>
+      <th>ID</th>
+      <th>日期</th>
+      <th>备注</th>
+      <th>下载文件</th>
+      <th>记录</th>
+      <th>操作</th>
+    </thead>
+    <tbody>
+      <% @imports.each do |import| %>
+      <tr>
+        <td><%= import.id %></td>
+        <td><%= import.created_at.strftime("%Y-%m-%d") %></td>
+        <td><%= import.remarks %></td>
+        <td><%= link_to "下载", import.csv_yun.url, class: "btn btn-info" %></td>
+        <td><%= import.status %></td>
+        <td>
+          <%= link_to "删除", import_path(import), method: :delete, class: "btn btn-danger", "data-confirm": "此操作将会删除此次导入的所有数据，确定吗？" %>
+        </td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>

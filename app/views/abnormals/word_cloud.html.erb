@@ -1,0 +1,64 @@
+<style>
+#presets a { border-left: solid #666 1px; padding: 0 10px; }
+#presets a.first { border-left: none; }
+#keyword { width: 300px; }
+#fetcher { width: 500px; }
+#keyword, #go { font-size: 1.5em; }
+#text { width: 100%; height: 100px; }
+p.copy { font-size: small; }
+#form { font-size: small; position: relative; }
+hr { border: none; border-bottom: solid #ccc 1px; }
+a.active { text-decoration: none; color: #000; font-weight: bold; cursor: text; }
+#angles line, #angles path, #angles circle { stroke: #666; }
+#angles text { fill: #333; }
+#angles path.drag { fill: #666; cursor: move; }
+#angles { text-align: center; margin: 0 auto; width: 350px; }
+#angles input, #max { width: 42px; }
+</style>
+
+</head>
+<body>
+  <div style="text-align: center" id="vis"></div>
+<form id="form">
+<div style="text-align: center">
+    <textarea id="text"><%=  @word_array.split("&").join(" ") %></textarea>
+  </p></div>
+</div>
+
+
+<div style="display: none;">
+
+        <hr>
+
+        <div style="float: right; text-align: right">
+          <p><label for="max">Number of words:</label> <input type="number" value="250" min="1" id="max">
+          </p><p><label for="per-line"><input type="checkbox" id="per-line"> One word per line</label>
+        </p></div>
+
+        <div style="float: left">
+          <p>
+            <label for="archimedean"><input type="radio" name="spiral" id="archimedean" value="archimedean" checked="checked"> Archimedean</label>
+            <label for="rectangular"><input type="radio" name="spiral" id="rectangular" value="rectangular"> Rectangular</label>
+          </p><p>
+            <label for="scale-log"><input type="radio" name="scale" id="scale-log" value="log" checked="checked"> log n</label>
+            <label for="scale-sqrt"><input type="radio" name="scale" id="scale-sqrt" value="sqrt"> √n</label>
+            <label for="scale-linear"><input type="radio" name="scale" id="scale-linear" value="linear"> n</label>
+          </p><p><label for="font">Font:</label> <input type="text" id="font" value="Impact">
+        </p></div>
+
+        <div id="angles">
+          <p><input type="number" id="angle-count" value="5" min="1"> <label for="angle-count">orientations</label>
+            <label for="angle-from">from</label> <input type="number" id="angle-from" value="-60" min="-90" max="90"> °
+            <label for="angle-to">to</label> <input type="number" id="angle-to" value="60" min="-90" max="90"> °
+        </p><svg width="151" height="70.5"><g transform="translate(75.5,60.5)"><path d="M -40.5 0 A 40.5 40.5 0 0 1 40.5 0" style="fill: none;"></path><line x1="-47.5" x2="47.5"></line><line y2="-47.5"></line><text dy=".3em" text-anchor="end" transform="rotate(0)translate(-50.5)rotate(0)translate(2)">-90°</text><text text-anchor="middle" transform="rotate(90)translate(-50.5)rotate(-90)translate(2)">0°</text><text dy=".3em" text-anchor="start" transform="rotate(180)translate(-50.5)rotate(-180)translate(2)">90°</text><path class="angle" d="M-35.07402885326976,-20.250000000000014A40.5,40.5 0 0,1 35.074028853269766,-20.25L0,0Z" style="fill: rgb(255, 204, 0);"></path><line class="angle" transform="rotate(30)" x2="-45.5"></line><line class="angle" transform="rotate(60)" x2="-40.5"></line><line class="angle" transform="rotate(90)" x2="-40.5"></line><line class="angle" transform="rotate(120)" x2="-40.5"></line><line class="angle" transform="rotate(150)" x2="-45.5"></line><path class="drag" d="M-9.5,0L-3,3.5L-3,-3.5Z" transform="rotate(30)translate(-40.5)"></path><path class="drag" d="M-9.5,0L-3,3.5L-3,-3.5Z" transform="rotate(150)translate(-40.5)"></path></g></svg></div>
+
+        <hr style="clear: both">
+
+</div>
+
+</form>
+
+
+<script src="<%= root_url %>/d3.min.js"></script>
+<script src="<%= root_url %>/cloud.min.js"></script>
+</body></html>

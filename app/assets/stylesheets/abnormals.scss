@@ -1,0 +1,101 @@
+// Place all the styles related to the abnormals controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+
+
+// 加载中背影
+#overlay {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  // background-color: #008CBA;
+  overflow: hidden;
+  width: 100%;
+  height: 0;
+  transition: .5s ease;
+  background-color: rgba(0,0,0,0.8);
+  z-index: 3;
+  cursor: pointer;
+}
+
+// 下载按钮居中
+#download_file_btn{
+  // position: absolute;
+  // top: 50%;
+  // left: 50%;
+  // transform: translate(-50%, -50%);
+  // -ms-transform: translate(-50%, -50%);
+}
+
+// 提示字体居中
+#text_1, #text_2 {
+  color: #fff;
+  font-size: 24px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+
+}
+svg {
+    background: rgba(0, 0, 0, 0.9);
+}
+
+//所有的Placeholder字体颜色
+input::-webkit-input-placeholder {
+    color: #999;
+}
+
+
+//上传csv的form表单
+.csv-form form {
+    float: right;
+}
+input#csv_file {
+    float: right;
+    width: 150px;
+}
+input#remarks {
+    display: block;
+    width: 125px;
+}
+input.btn.btn-info.btn-sm {
+    float: right;
+}
+a#download_excel_btn {
+    float: left;
+}
+//日期表单
+input#end_date {
+    width: 100px;
+}
+input#start_date {
+    width: 100px;
+}
+
+.btn:hover{
+  background: translate;
+}
+// 以下是分页的链接
+.pagination a {
+    border: 1px solid;
+    padding: 6px;
+}
+em.current {
+    padding: 7px;
+    background: #2e6ab1;
+}
+span.previous_page.disabled {
+    border: 1px solid #999;
+    padding: 7px;
+}
+
+
+
+// 新增页面：
+.col-sm-3.select-item {
+    white-space: nowrap;
+}

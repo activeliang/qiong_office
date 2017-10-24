@@ -9,7 +9,7 @@ end
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.0.2'
 # Use sqlite3 as the database for Active Record
-gem 'sqlite3'
+
 # Use Puma as the app server
 gem 'puma', '~> 3.0'
 # Use SCSS for stylesheets
@@ -24,7 +24,6 @@ gem 'coffee-rails', '~> 4.2'
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
-gem 'turbolinks', '~> 5'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.5'
 # Use Redis adapter to run Action Cable in production
@@ -35,9 +34,34 @@ gem 'jbuilder', '~> 2.5'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
+gem 'devise'
+gem 'bootstrap-sass'
+gem 'simple_form'
+gem 'font-awesome-rails'
+gem 'rest-client'
+gem 'rqrcode'
+
+gem 'rubyzip'
+gem 'axlsx'
+gem 'axlsx_rails'
+gem 'bootstrap-datepicker-rails'
+gem 'carrierwave'
+
+gem 'mini_magick'
+gem 'figaro'
+gem 'carrierwave-qiniu'
+gem 'qiniu-rs'
+
+gem 'will_paginate'
+
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platform: :mri
+  gem 'pry'
+  gem 'awesome_rails_console'
+  gem 'sqlite3'
+
 end
 
 group :development do
@@ -51,3 +75,8 @@ end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+
+
+group :production do
+  gem 'pg'
+end
