@@ -1,0 +1,27 @@
+production:
+  qiniu_access_key: bxGSgAf0sSZzqx5_fbuSdLvFZoCcTrko0x6218kP  # 你的 qiniu AccessKey
+
+  qiniu_secret_key: o-thyjkb_iiuP1nMm0o2VtcAAEgoaIN7_JyW95lV  # 你的 qiniu SecretKey
+
+  qiniu_bucket: qiong-office  # 你的 qiniu bucket
+
+  qiniu_bucket_domain: ovi8fy2di.bkt.clouddn.com  # 你的 qiniu bucket domain
+
+  diastar_username: 2145
+
+  diastar_password: 8523698
+
+
+
+development:
+  qiniu_access_key: bxGSgAf0sSZzqx5_fbuSdLvFZoCcTrko0x6218kP  # 你的 qiniu AccessKey
+
+  qiniu_secret_key: o-thyjkb_iiuP1nMm0o2VtcAAEgoaIN7_JyW95lV  # 你的 qiniu SecretKey
+
+  qiniu_bucket: qiong-office  # 你的 qiniu bucket
+
+  qiniu_bucket_domain: ovi8fy2di.bkt.clouddn.com  # 你的 qiniu bucket domain
+
+  diastar_username: 2145
+
+  diastar_password: 8523698
