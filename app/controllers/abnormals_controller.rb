@@ -3,7 +3,7 @@ class AbnormalsController < ApplicationController
   before_action :admin_required, only: [:new, :create, :edit, :update, :destroy, :import, :update_envelop]
 
   def  index
-    @abnormals = Abnormal.render_filter_data(params).paginate(:page => params[:page], :per_page => 30)
+    @abnormals = Abnormal.render_filter_data(params)
     @start_date = params[:start_on].present? ?  Date.parse(params[:start_on]).beginning_of_day : Time.now.months_ago(2).at_beginning_of_month
     @end_date = Date.parse(params[:end_on]).end_of_day if params[:end_on].present?
     # 页面备用的链接
@@ -23,6 +23,7 @@ class AbnormalsController < ApplicationController
         create_word_cloud_data(@start_date, @end_date, @department_hash, @deal_method_hash)
       }
     end
+    @abnormals = @abnormals.paginate(:page => params[:page], :per_page => 30)
   end
 
   def new
